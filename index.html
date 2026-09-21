@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Моя Система</title>
+
+  <!-- Telegram Web App SDK — обов'язковий перший скрипт -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Inter:wght@400;500;600&display=swap">
+
+  <style>
+    /* ── CSS токени — заміняються темою Telegram ── */
+    :root {
+      --tg-bg: var(--tg-theme-bg-color, #ffffff);
+      --tg-surface: var(--tg-theme-secondary-bg-color, #f0f0f0);
+      --tg-text: var(--tg-theme-text-color, #000000);
+      --tg-hint: var(--tg-theme-hint-color, #999999);
+      --tg-link: var(--tg-theme-link-color, #2481cc);
+      --tg-btn: var(--tg-theme-button-color, #2481cc);
+      --tg-btn-text: var(--tg-theme-button-text-color, #ffffff);
+
+      /* Кольори зон — лишаємо фіксованими */
+      --teal: #2C7A65;
+      --teal-bg: rgba(44,122,101,.12);
+      --amber: #A6671A;
+      --amber-bg: rgba(166,103,26,.12);
+      --blue: #2558A0;
+      --blue-bg: rgba(37,88,160,.12);
+      --red: #B83232;
+      --red-bg: rgba(184,50,50,.10);
+
+      --border: rgba(128,128,128,.15);
+      --r: 14px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--tg-bg);
+      color: var(--tg-text);
+      font-size: 14px;
+      line-height: 1.6;
+      padding-inline: 16px;
+      padding-block: env(safe-area-inset-top, 12px) calc(env(safe-area-inset-bottom, 0px) + 24px);
+      max-width: 680px;
+      margin: 0 auto;
+      overscroll-behavior: none;
+    }
+
+    h1, h2, h3 { font-family: 'Fraunces', Georgia, serif; }
+
+    /* ── HEADER ── */
+    .header { text-align: center; padding-block: 12px 20px; }
+    .header h1 { font-size: 28px; font-weight: 300; letter-spacing: -0.3px; }
+    .header .sub { color: var(--tg-hint); font-size: 12px; margin-top: 4px; }
+
+    /* ── HEALTH BANNER ── */
+    .health {
+      background: var(--red-bg);
+      border: 1px solid var(--red);
+      border-radius: var(--r);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .health .ico { font-size: 20px; flex-shrink: 0; }
+    .health h3 { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: var(--red); margin-bottom: 3px; }
+    .health p { font-size: 12.5px; color: var(--tg-hint); }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex; gap: 6px;
+      margin-bottom: 16px;
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex-shrink: 0;
+      padding: 7px 16px;
+      border-radius: 99px;
+      font-size: 13px; font-weight: 500;
+      background: var(--tg-surface);
+      color: var(--tg-hint);
+      border: none; cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .tab.active { background: var(--tg-btn); color: var(--tg-btn-text); }
+
+    /* ── ZONE CARD ── */
+    .zone { margin-bottom: 12px; }
+    .zone[hidden] { display: none !important; }
+
+    .zone-head {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 14px 16px 10px;
+      background: var(--tg-surface);
+      border-radius: var(--r) var(--r) 0 0;
+    }
+    .zone-stripe { width: 3px; border-radius: 99px; flex-shrink: 0; align-self: stretch; min-height: 28px; }
+    .zone-eyebrow { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 1px; }
+    .zone-name { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; line-height: 1.1; color: var(--tg-text); }
+    .zone-tag { margin-left: auto; font-size: 11px; color: var(--tg-hint); background: var(--border); padding: 2px 8px; border-radius: 99px; white-space: nowrap; margin-top: 2px; }
+
+    .zone-body { background: var(--tg-surface); border-radius: 0 0 var(--r) var(--r); padding: 0 16px 4px; }
+
+    .task {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer; user-select: none;
+    }
+    .task:last-child { border-bottom: none; }
+    .task-cb {
+      width: 20px; height: 20px; flex-shrink: 0;
+      border-radius: 6px;
+      border: 1.5px solid var(--tg-hint);
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 1px;
+      transition: background .15s, border-color .15s;
+    }
+    .task.done .task-cb { border-color: var(--tg-btn); background: var(--tg-btn); }
+    .task.done .task-cb::after { content: '✓'; color: white; font-size: 12px; font-weight: 600; }
+    .task.done .task-name { color: var(--tg-hint); text-decoration: line-through; }
+    .task-name { font-size: 13.5px; }
+    .task-freq { font-size: 11px; color: var(--tg-hint); margin-top: 2px; }
+
+    .f .zone-stripe, .f .task-cb.active { background: var(--teal); }
+    .f .zone-eyebrow { color: var(--teal); }
+    .f .task.done .task-cb { background: var(--teal); border-color: var(--teal); }
+
+    .tr .zone-stripe { background: var(--amber); }
+    .tr .zone-eyebrow { color: var(--amber); }
+    .tr .task.done .task-cb { background: var(--amber); border-color: var(--amber); }
+
+    .g .zone-stripe { background: var(--blue); }
+    .g .zone-eyebrow { color: var(--blue); }
+    .g .task.done .task-cb { background: var(--blue); border-color: var(--blue); }
+
+    /* ── WEEK TAB ── */
+    .week-info { background: var(--tg-surface); border-radius: var(--r); padding: 16px; margin-bottom: 12px; }
+    .week-info h3 { font-family: 'Fraunces', serif; font-size: 18px; margin-bottom: 12px; }
+    .day-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .day-row:last-child { border-bottom: none; }
+    .day-name { font-weight: 600; font-size: 13px; min-width: 28px; color: var(--tg-hint); }
+    .day-blocks { display: flex; gap: 5px; flex-wrap: wrap; flex: 1; }
+    .blk { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 6px; }
+    .blk.fnd { background: var(--teal-bg); color: var(--teal); }
+    .blk.js  { background: var(--amber-bg); color: var(--amber); }
+    .blk.cr  { background: var(--blue-bg); color: var(--blue); }
+
+    /* ── DETOX TAB ── */
+    .detox-cat { background: var(--tg-surface); border-radius: var(--r); margin-bottom: 12px; padding: 14px 16px; }
+    .detox-cat h4 { font-size: 13px; font-weight: 600; color: var(--tg-hint); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .di { display: flex; gap: 10px; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
+    .di:last-child { border-bottom: none; }
+    .di .task-cb { width: 20px; height: 20px; flex-shrink: 0; border-radius: 6px; border: 1.5px solid var(--tg-hint); display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+    .di.done .task-cb { background: var(--teal); border-color: var(--teal); }
+    .di.done .task-cb::after { content: '✓'; color: white; font-size: 12px; font-weight: 600; }
+    .di.done span { color: var(--tg-hint); text-decoration: line-through; }
+    .di span { font-size: 13.5px; }
+
+    .detox-note { font-size: 12px; color: var(--tg-hint); text-align: center; margin-top: 8px; }
+
+    /* ── LOADING ── */
+    .loading { text-align: center; color: var(--tg-hint); padding: 40px; font-size: 14px; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: calc(env(safe-area-inset-bottom, 0px) + 20px); left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--tg-text); color: var(--tg-bg);
+      padding: 8px 18px; border-radius: 99px;
+      font-size: 13px; font-weight: 500;
+      opacity: 0; transition: opacity .2s, transform .2s;
+      pointer-events: none; white-space: nowrap;
+      z-index: 100;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+<div id="loading" class="loading">Завантаження...</div>
+
+<div id="app" hidden>
+  <div class="header">
+    <h1>Моя Система</h1>
+    <div class="sub" id="date-line"></div>
+  </div>
+
+  <!-- Health Banner -->
+  <div class="health">
+    <div class="ico">⚕️</div>
+    <div>
+      <h3>Задача №0 — вище всього іншого</h3>
+      <p>Температура 6 місяців — це важливо. Запишись до лікаря цього тижня: аналіз крові + сечі + терапевт.</p>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="tasks">✅ Задачі</button>
+    <button class="tab" data-tab="week">📅 Розклад</button>
+    <button class="tab" data-tab="detox">🧹 Детокс</button>
+  </div>
+
+  <!-- TAB: Tasks -->
+  <div id="tab-tasks">
+    <div id="zones-root"></div>
+  </div>
+
+  <!-- TAB: Week -->
+  <div id="tab-week" hidden>
+    <div class="week-info">
+      <h3>Тижневий ритм</h3>
+      <div class="day-row"><span class="day-name">Пн</span><div class="day-blocks"><span class="blk fnd">Йога</span><span class="blk js">JS 5год</span><span class="blk cr">Канал</span></div></div>
+      <div class="day-row"><span class="day-name">Вт</span><div class="day-blocks"><span class="blk fnd">Йога</span><span class="blk js">JS 3год</span><span class="blk cr">Портфоліо</span><span class="blk cr">Канал</span></div></div>
+      <div class="day-row"><span class="day-name">Ср</span><div class="day-blocks"><span class="blk fnd">Йога</span><span class="blk js">JS 5год</span><span class="blk cr">Канал</span></div></div>
+      <div class="day-row"><span class="day-name">Чт</span><div class="day-blocks"><span class="blk fnd">Йога</span><span class="blk js">JS 3год</span><span class="blk cr">Etsy</span><span class="blk cr">Робота</span></div></div>
+      <div class="day-row"><span class="day-name">Пт</span><div class="day-blocks"><span class="blk fnd">Йога</span><span class="blk js">JS 4год</span><span class="blk cr">Сайт</span></div></div>
+      <div class="day-row"><span class="day-name">Сб</span><div class="day-blocks"><span class="blk cr">Портфоліо</span><span class="blk cr">Etsy</span><span class="blk fnd">Прогулянка</span></div></div>
+      <div class="day-row"><span class="day-name">Нд</span><div class="day-blocks"><span class="blk fnd">Відпочинок</span><span class="blk fnd">Прибирання</span></div></div>
+    </div>
+    <div class="week-info" style="font-size:13px; color: var(--tg-hint);">
+      <b style="color:var(--tg-text)">JS разом:</b> Пн(5) + Вт(3) + Ср(5) + Чт(3) + Пт(4) = <b style="color:var(--amber)">20 год/тиж ✓</b><br><br>
+      <b style="color:var(--tg-text)">Принцип:</b> Спочатку Фундамент → потім JS → потім Перехід → Ріст тільки якщо є сили.
+    </div>
+  </div>
+
+  <!-- TAB: Detox -->
+  <div id="tab-detox" hidden>
+    <div class="detox-cat">
+      <h4>💻 Комп'ютер</h4>
+      <div id="detox-pc"></div>
+    </div>
+    <div class="detox-cat">
+      <h4>📱 Телефон</h4>
+      <div id="detox-phone"></div>
+    </div>
+    <p class="detox-note" id="detox-score"></p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Telegram SDK setup ────────────────────────────────────────────────────────
+const tg = window.Telegram?.WebApp;
+if (tg) {
+  tg.ready();
+  tg.expand();
+  tg.disableVerticalSwipes?.();
+}
+
+// ── Helpers: CloudStorage з localStorage fallback ─────────────────────────────
+function csGet(keys) {
+  const arr = typeof keys === 'string' ? [keys] : keys;
+  return new Promise((resolve) => {
+    if (tg?.CloudStorage) {
+      tg.CloudStorage.getItems(arr, (err, vals) => {
+        if (err) {
+          // fallback to localStorage
+          const r = {};
+          arr.forEach(k => { try { r[k] = localStorage.getItem(k) || ''; } catch { r[k] = ''; } });
+          resolve(r);
+        } else resolve(vals);
+      });
+    } else {
+      const r = {};
+      arr.forEach(k => { try { r[k] = localStorage.getItem(k) || ''; } catch { r[k] = ''; } });
+      resolve(r);
+    }
+  });
+}
+
+function csSet(key, value) {
+  return new Promise((resolve) => {
+    if (tg?.CloudStorage) {
+      tg.CloudStorage.setItem(key, String(value), (err) => {
+        if (err) { try { localStorage.setItem(key, String(value)); } catch {} }
+        resolve();
+      });
+    } else {
+      try { localStorage.setItem(key, String(value)); } catch {}
+      resolve();
+    }
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+const ZONES = [
+  {
+    id: 'f', cls: 'f', eyebrow: 'Щоденно — обов\'язково', name: 'Фундамент',
+    tag: 'не пропускати',
+    tasks: [
+      { t: 'Йога / зарядка / стретчінг', f: 'вранці, ~20–30 хв' },
+      { t: 'Снідок + вітаміни', f: 'без пропусків' },
+      { t: 'Прогулянка на свіжому повітрі', f: '~30 хв, обід або вечір' },
+      { t: 'Нормальний сон 7–8 год', f: 'лягати до 23:00' },
+      { t: 'Лікар — записатись на огляд', f: '🔴 цього тижня' },
+    ]
+  },
+  {
+    id: 'tr', cls: 'tr', eyebrow: 'Головне зараз', name: 'Перехід',
+    tag: '~25 год/тиж',
+    tasks: [
+      { t: 'JS курс', f: '~20 год/тиж — пріоритет №1' },
+      { t: 'Портфоліо ретуші', f: '3–5 год/тиж' },
+      { t: 'Etsy лістинги', f: '2–3 год/тиж' },
+      { t: 'Сайт ретушера', f: '2–3 год/тиж' },
+      { t: 'Пошук роботи', f: 'пт вечір, ~2 год/тиж' },
+    ]
+  },
+  {
+    id: 'g', cls: 'g', eyebrow: 'Коли є сили', name: 'Ріст',
+    tag: 'без тиску',
+    tasks: [
+      { t: 'Канал про науку та AI', f: '1–2 відео/тиж' },
+      { t: 'Пізнавальні відео', f: 'замість соцмереж — пасивно' },
+      { t: 'Прибирання дому', f: 'вихідні, маленькими кроками' },
+    ]
+  }
+];
+
+const DETOX_PC = [
+  'Закрити всі вкладки (зберегти посилання в Notion)',
+  'Розчистити робочий стіл',
+  'Розібрати папку Downloads',
+  'Архівувати старі проекти',
+  'Видалити непотрібні програми',
+  'Очистити Кошик',
+];
+const DETOX_PHONE = [
+  'Видалити дублі фото (Google Photos → Звільнити місце)',
+  'Відписатись від 50% Telegram каналів',
+  'Видалити неактивні додатки',
+  'Вимкнути зайві сповіщення',
+  'Залишити 1–2 вкладки у браузері',
+  'Архівувати старі чати',
+];
+
+// ── Render zones ──────────────────────────────────────────────────────────────
+function renderZones(states) {
+  const root = document.getElementById('zones-root');
+  root.innerHTML = '';
+
+  ZONES.forEach(z => {
+    const saved = JSON.parse(states['zone-' + z.id] || '[]');
+
+    const card = document.createElement('div');
+    card.className = 'zone ' + z.cls;
+    card.innerHTML = `
+      <div class="zone-head">
+        <div class="zone-stripe"></div>
+        <div style="flex:1">
+          <div class="zone-eyebrow">${z.eyebrow}</div>
+          <div class="zone-name">${z.name}</div>
+        </div>
+        <div class="zone-tag">${z.tag}</div>
+      </div>
+      <div class="zone-body">
+        ${z.tasks.map((t, i) => `
+          <div class="task ${saved[i] ? 'done' : ''}" data-z="${z.id}" data-i="${i}">
+            <div class="task-cb"></div>
+            <div><div class="task-name">${t.t}</div><div class="task-freq">${t.f}</div></div>
+          </div>`).join('')}
+      </div>`;
+
+    card.querySelectorAll('.task').forEach(row => {
+      row.addEventListener('click', async () => {
+        const {z: zid, i: idx} = row.dataset;
+        const zoneData = JSON.parse((await csGet('zone-' + zid))['zone-' + zid] || '[]');
+        zoneData[+idx] = !zoneData[+idx];
+        await csSet('zone-' + zid, JSON.stringify(zoneData));
+        row.classList.toggle('done', zoneData[+idx]);
+        if (zoneData[+idx]) showToast('✓ Відмічено');
+        tg?.HapticFeedback?.impactOccurred('light');
+      });
+    });
+
+    root.appendChild(card);
+  });
+}
+
+// ── Render detox ──────────────────────────────────────────────────────────────
+function renderDetox(states) {
+  let total = 0, done = 0;
+
+  function makeList(containerId, items, prefix) {
+    const container = document.getElementById(containerId);
+    items.forEach((item, i) => {
+      total++;
+      const key = `${prefix}-${i}`;
+      const checked = states[key] === '1';
+      if (checked) done++;
+      const el = document.createElement('div');
+      el.className = 'di' + (checked ? ' done' : '');
+      el.dataset.key = key;
+      el.innerHTML = `<div class="task-cb"></div><span>${item}</span>`;
+      el.addEventListener('click', async () => {
+        const was = el.classList.contains('done');
+        await csSet(key, was ? '0' : '1');
+        el.classList.toggle('done', !was);
+        if (!was) { done++; showToast('✓ Виконано'); }
+        else done--;
+        tg?.HapticFeedback?.impactOccurred('light');
+        document.getElementById('detox-score').textContent = `Виконано ${done} з ${total}`;
+      });
+      container.appendChild(el);
+    });
+  }
+
+  makeList('detox-pc', DETOX_PC, 'dt-pc');
+  makeList('detox-phone', DETOX_PHONE, 'dt-ph');
+  document.getElementById('detox-score').textContent = `Виконано ${done} з ${total}`;
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    ['tasks', 'week', 'detox'].forEach(id => {
+      document.getElementById('tab-' + id).hidden = id !== tab.dataset.tab;
+    });
+    tg?.HapticFeedback?.selectionChanged();
+  });
+});
+
+// ── Date ──────────────────────────────────────────────────────────────────────
+const d = new Date();
+const days = ['нд','пн','вт','ср','чт','пт','сб'];
+const months = ['січ','лют','бер','кві','тра','чер','лип','сер','вер','жов','лис','гру'];
+document.getElementById('date-line').textContent =
+  `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+async function init() {
+  const keys = [
+    'zone-f', 'zone-tr', 'zone-g',
+    ...DETOX_PC.map((_, i) => `dt-pc-${i}`),
+    ...DETOX_PHONE.map((_, i) => `dt-ph-${i}`),
+  ];
+  const states = await csGet(keys);
+
+  renderZones(states);
+  renderDetox(states);
+
+  document.getElementById('loading').hidden = true;
+  document.getElementById('app').hidden = false;
+}
+
+init();
+</script>
+</body>
+</html>
