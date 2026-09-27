@@ -94,7 +94,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
 .cat-badge{display:inline-flex;align-items:center;gap:4px;background:var(--s3);border-radius:99px;padding:3px 8px;font-size:11px;font-weight:600;color:var(--tx2);margin-top:5px}
 .cat-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;flex-wrap:nowrap}
 .cat-chips::-webkit-scrollbar{display:none}
-.cat-chip{display:flex;align-items:center;gap:5px;background:var(--s2);border:2px solid transparent;border-radius:99px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:.2s;font-family:inherit}
+.cat-chip{display:flex;align-items:center;gap:5px;background:var(--s2);border:2px solid transparent;border-radius:99px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:.2s;font-family:inherit;color:var(--tx)}
 .cat-chip.on{border-color:var(--acc);color:var(--acc);background:rgba(167,139,250,.1)}
 .cat-heading{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin:14px 0 6px;display:flex;align-items:center;gap:6px}
 
@@ -336,6 +336,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
     <div class="field"><label id="gm-cat-label">Категорія</label><div class="cat-chips" id="gm-cats"></div></div>
     <div class="field"><label>Колір</label><div class="color-row" id="gm-colors"></div></div>
     <button class="sbtn" onclick="saveGoal()">Зберегти</button>
+  </div>
+</div>
+
+<!-- ══ ADD CATEGORY MODAL ══ -->
+<div class="overlay" id="cat-modal" onclick="closeM(event,'cat-modal')">
+  <div class="mbox">
+    <div class="mhandle"></div>
+    <div class="mtitle">Нова категорія</div>
+    <div class="field"><label>Назва</label><input id="cat-name-inp" placeholder="Наприклад: Творчість" maxlength="30"></div>
+    <div class="field"><label>Емодзі</label><input id="cat-emoji-inp" placeholder="🎨" maxlength="4"></div>
+    <button class="sbtn" onclick="saveCat()">Додати</button>
   </div>
 </div>
 
@@ -702,12 +713,21 @@ function selCat(id) {
 }
 
 function addCustomCat() {
-  const name = prompt(L('add-cat') + ':');
-  if (!name || !name.trim()) return;
+  document.getElementById('cat-name-inp').value = '';
+  document.getElementById('cat-emoji-inp').value = '';
+  openM('cat-modal');
+  setTimeout(() => document.getElementById('cat-name-inp').focus(), 350);
+}
+
+function saveCat() {
+  const name = document.getElementById('cat-name-inp').value.trim();
+  const icon = document.getElementById('cat-emoji-inp').value.trim() || '✨';
+  if (!name) return;
   const id = 'c_' + Date.now();
-  customCats.push({id, icon:'✨', label:{uk:name.trim(), ru:name.trim(), en:name.trim()}});
+  customCats.push({id, icon, label:{uk:name, ru:name, en:name}});
   csSet('custom_cats', JSON.stringify(customCats));
   selGoalCat = id;
+  closeM(null, 'cat-modal');
   buildCatChips();
 }
 
@@ -930,8 +950,11 @@ function highlightColor(containerId, color) {
   });
 }
 
+function openM(id) {
+  document.getElementById(id).classList.add('on');
+}
 function closeM(e, id) {
-  if (e.target.id===id) document.getElementById(id).classList.remove('on');
+  if (!e || e.target.id===id) document.getElementById(id).classList.remove('on');
 }
 
 // ── Start ─────────────────────────────────────────────────────────────────
