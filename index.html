@@ -135,6 +135,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
 .ai-btn:active{opacity:.7}
 .ai-btn:disabled{opacity:.5;cursor:not-allowed}
 
+/* ── Alert card ── */
+.alert-card{background:rgba(248,113,113,.08);border:1.5px solid var(--red);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;display:none;gap:10px;align-items:flex-start;animation:fadeIn .3s ease}
+.alert-card.on{display:flex}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.alert-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.alert-body{flex:1}
+.alert-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--red);margin-bottom:5px}
+.alert-text{font-size:13px;color:var(--tx);line-height:1.6}
+
 /* ── Bottom nav ── */
 .nav{position:fixed;bottom:0;left:0;right:0;height:var(--nav);background:var(--s1);border-top:1px solid var(--brd);display:flex;align-items:stretch;padding-bottom:env(safe-area-inset-bottom,0px);z-index:100;backdrop-filter:blur(10px)}
 .ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--tx3);transition:color .2s;padding:6px 4px}
@@ -163,6 +172,23 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
 .freq-opt.on{border-color:var(--acc);color:var(--acc)}
 .sbtn{width:100%;background:linear-gradient(135deg,var(--acc2),var(--acc));border:none;border-radius:14px;color:white;font-size:16px;font-weight:700;padding:15px;cursor:pointer;margin-top:4px;font-family:inherit}
 .sbtn:active{opacity:.85}
+
+/* ── Schedule ── */
+.sched-ai-card{background:linear-gradient(135deg,var(--s2),var(--s3));border:1px solid rgba(167,139,250,.2);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sched-ai-left{display:flex;flex-direction:column;gap:3px}
+.sched-ai-btn{background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.25);border-radius:20px;color:var(--acc);font-size:13px;font-weight:600;padding:7px 16px;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0}
+.sched-ai-btn:disabled{opacity:.5;cursor:not-allowed}
+.sched-item{background:var(--s1);border:1px solid var(--brd);border-radius:var(--r2);padding:12px 12px 12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;transition:border-color .2s,opacity .2s}
+.sched-item.done{opacity:.55;border-color:transparent}
+.sched-check{width:24px;height:24px;border-radius:50%;border:2px solid var(--tx3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:.2s}
+.sched-item.done .sched-check{background:var(--green);border-color:var(--green);color:white}
+.sched-time{font-size:13px;font-weight:700;color:var(--acc);min-width:40px;flex-shrink:0}
+.sched-body{flex:1;cursor:pointer;min-width:0}
+.sched-title{font-size:14px;font-weight:500;line-height:1.4}
+.sched-item.done .sched-title{text-decoration:line-through;color:var(--tx3)}
+.sched-ai-tag{font-size:10px;color:var(--tx3);background:rgba(167,139,250,.1);border-radius:99px;padding:1px 7px;display:inline-block;margin-top:3px}
+.sched-acts{display:flex;gap:0;flex-shrink:0}
+.sched-acts button{background:none;border:none;color:var(--tx3);font-size:16px;padding:4px 5px;cursor:pointer}
 
 /* ── Misc ── */
 .empty{text-align:center;padding:40px 20px;color:var(--tx3)}
@@ -223,6 +249,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
       </div>
       <div class="ai-text" id="ai-text">Натисни «Оновити», щоб AI порадив щось на основі твоїх цілей.</div>
     </div>
+    <div class="alert-card" id="ai-alert">
+      <div class="alert-icon">🚨</div>
+      <div class="alert-body">
+        <div class="alert-title">Зверни увагу</div>
+        <div class="alert-text" id="ai-alert-text"></div>
+      </div>
+    </div>
     <div class="sec-lbl" id="txt-today-hab">Сьогодні</div>
     <div id="hab-list"></div>
     <button class="add-btn" onclick="openHabModal()"><span>＋</span><span id="txt-add-hab">Додати запис</span></button>
@@ -246,6 +279,24 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
     <div><div class="hdr-title" id="txt-prog-title">Прогрес</div><div class="hdr-sub" id="txt-prog-sub">Статистика</div></div>
   </div>
   <div class="pane" id="prog-pane"></div>
+</div>
+
+<!-- ══ SCHEDULE ══ -->
+<div class="scr" id="s-schedule">
+  <div class="hdr">
+    <div><div class="hdr-title">Розклад</div><div class="hdr-sub" id="sched-date"></div></div>
+  </div>
+  <div class="pane">
+    <div class="sched-ai-card">
+      <div class="sched-ai-left">
+        <div class="ai-badge">✦ AI-планувальник</div>
+        <div style="font-size:12px;color:var(--tx3);margin-top:1px">Складе розклад на основі твоїх цілей</div>
+      </div>
+      <button class="sched-ai-btn" id="sched-ai-btn" onclick="loadScheduleAI()">Згенерувати</button>
+    </div>
+    <div id="sched-list"></div>
+    <button class="add-btn" onclick="openSchedModal()"><span>＋</span><span>Додати вручну</span></button>
+  </div>
 </div>
 
 <!-- ══ SETTINGS ══ -->
@@ -297,6 +348,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
   <div class="ni" id="ni-progress" onclick="go('progress')">
     <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     <span id="nl-progress">Прогрес</span>
+  </div>
+  <div class="ni" id="ni-schedule" onclick="go('schedule')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/></svg>
+    <span>Розклад</span>
   </div>
   <div class="ni" id="ni-settings" onclick="go('settings')">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -350,6 +405,17 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
   </div>
 </div>
 
+<!-- ══ SCHEDULE MODAL ══ -->
+<div class="overlay" id="sched-modal" onclick="closeM(event,'sched-modal')">
+  <div class="mbox">
+    <div class="mhandle"></div>
+    <div class="mtitle" id="sm-title-h">Новий запис</div>
+    <div class="field"><label>Час</label><input type="time" id="sm-time" style="font-size:17px"></div>
+    <div class="field"><label>Що робити</label><input id="sm-name" placeholder="Наприклад: Пробіжка 30 хвилин"></div>
+    <button class="sbtn" onclick="saveSched()">Зберегти</button>
+  </div>
+</div>
+
 <script>
 const tg = window.Telegram?.WebApp;
 if (tg) { tg.ready(); tg.expand(); }
@@ -391,6 +457,7 @@ let customCats = [], selGoalCat = '';
 let editHabId = null, editGoalId = null;
 let selHabColor = COLORS[0], selGoalColor = COLORS[0];
 let habFreq = 'daily';
+let scheduleItems = [], editSchedId = null;
 
 // ── CloudStorage ──────────────────────────────────────────────────────────
 function csGet(keys) {
@@ -411,12 +478,13 @@ function csSet(k, v) {
 
 // ── Init ──────────────────────────────────────────────────────────────────
 async function init() {
-  const s = await csGet(['lang','theme','habits','goals','xp','h5','h3','oai_key','custom_cats']);
+  const s = await csGet(['lang','theme','habits','goals','xp','h5','h3','oai_key','custom_cats','schedule']);
   if (s.lang) lang = s.lang;
   if (s.theme) theme = s.theme;
   if (s.habits) try { habits = JSON.parse(s.habits); } catch(_){}
   if (s.goals) try { goals = JSON.parse(s.goals); } catch(_){}
   if (s.custom_cats) try { customCats = JSON.parse(s.custom_cats); } catch(_){}
+  if (s.schedule) try { scheduleItems = JSON.parse(s.schedule); } catch(_){}
   if (s.xp) totalXp = parseInt(s.xp)||0;
   // oai_key is server-side only
   if (s.h5) document.getElementById('h5').value = s.h5;
@@ -530,6 +598,11 @@ function go(tab) {
   document.getElementById('s-'+tab)?.classList.add('on');
   document.getElementById('ni-'+tab)?.classList.add('on');
   if (tab==='progress') renderProgress();
+  if (tab==='schedule') {
+    const d = new Date().toLocaleDateString(lang==='en'?'en-US':lang==='ru'?'ru-RU':'uk-UA',{weekday:'long',day:'numeric',month:'long'});
+    document.getElementById('sched-date').textContent = d;
+    renderSchedule();
+  }
   tg?.HapticFeedback?.selectionChanged();
 }
 
@@ -894,15 +967,160 @@ function renderProfile() {
   dvAv.textContent = (u.first_name||'?')[0].toUpperCase();
 }
 
+// ── Schedule ──────────────────────────────────────────────────────────────
+function renderSchedule() {
+  const el = document.getElementById('sched-list');
+  if (!scheduleItems.length) {
+    el.innerHTML = `<div class="empty"><span class="ei">📅</span><p>Натисни «Згенерувати» або додай вручну</p></div>`;
+    return;
+  }
+  const sorted = [...scheduleItems].sort((a,b)=>a.time.localeCompare(b.time));
+  el.innerHTML = sorted.map(item => `
+    <div class="sched-item ${item.done?'done':''}" id="si-${item.id}">
+      <div class="sched-check" onclick="toggleSched('${item.id}')">${item.done?'✓':''}</div>
+      <div class="sched-time">${item.time||'—'}</div>
+      <div class="sched-body" onclick="toggleSched('${item.id}')">
+        <div class="sched-title">${esc(item.title)}</div>
+        ${item.ai?`<span class="sched-ai-tag">✦ AI</span>`:''}
+      </div>
+      <div class="sched-acts">
+        <button onclick="openSchedModal('${item.id}')">✏️</button>
+        <button onclick="delSched('${item.id}')">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openSchedModal(id) {
+  editSchedId = id || null;
+  const item = id ? scheduleItems.find(x=>x.id===id) : null;
+  document.getElementById('sm-title-h').textContent = id ? 'Редагувати' : 'Новий запис';
+  document.getElementById('sm-time').value = item?.time || '';
+  document.getElementById('sm-name').value = item?.title || '';
+  openM('sched-modal');
+  setTimeout(()=>document.getElementById('sm-name').focus(), 300);
+}
+
+function saveSched() {
+  const time = document.getElementById('sm-time').value;
+  const title = document.getElementById('sm-name').value.trim();
+  if (!title) { document.getElementById('sm-name').focus(); return; }
+  if (editSchedId) {
+    const item = scheduleItems.find(x=>x.id===editSchedId);
+    if (item) { item.time = time; item.title = title; item.ai = false; }
+  } else {
+    scheduleItems.push({id: Date.now().toString(), time, title, done: false, ai: false});
+  }
+  csSet('schedule', JSON.stringify(scheduleItems));
+  renderSchedule();
+  closeM(null, 'sched-modal');
+  tg?.HapticFeedback?.notificationOccurred('success');
+}
+
+function toggleSched(id) {
+  const item = scheduleItems.find(x=>x.id===id);
+  if (!item) return;
+  item.done = !item.done;
+  csSet('schedule', JSON.stringify(scheduleItems));
+  renderSchedule();
+  tg?.HapticFeedback?.impactOccurred('light');
+}
+
+function delSched(id) {
+  scheduleItems = scheduleItems.filter(x=>x.id!==id);
+  csSet('schedule', JSON.stringify(scheduleItems));
+  renderSchedule();
+  tg?.HapticFeedback?.notificationOccurred('warning');
+}
+
 // ── AI ────────────────────────────────────────────────────────────────────
-const API_BASE = 'https://78-27-237-243.sslip.io';
-const API_URL  = API_BASE + '/advice';
-const CAT_URL  = API_BASE + '/categorize';
+const API_BASE  = 'https://78-27-237-243.sslip.io';
+const API_URL   = API_BASE + '/advice';
+const CAT_URL   = API_BASE + '/categorize';
+const SCHED_URL = API_BASE + '/schedule';
+
+async function loadScheduleAI() {
+  const btn = document.getElementById('sched-ai-btn');
+  if (!goals.length) {
+    alert(lang==='en'?'Add at least one goal first.':lang==='ru'?'Сначала добавь хотя бы одну цель.':'Спочатку додай хоча б одну ціль.');
+    return;
+  }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+
+  try {
+    const goalsText = goals.map(g=>`- ${g.title}${g.desc?': '+g.desc:''}`).join('\n');
+    const habText   = habits.map(h=>`- ${h.name} (🔥${h.streak||0}${h.done?' ✓':''})`).join('\n');
+
+    const r = await fetch(SCHED_URL, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({goals: goalsText, habits: habText || undefined, lang})
+    });
+    if (!r.ok) throw new Error('server ' + r.status);
+    const d = await r.json();
+    if (!d.items || !d.items.length) throw new Error('empty');
+
+    // Replace only AI items; keep manually added ones
+    scheduleItems = scheduleItems.filter(x => !x.ai);
+    d.items.forEach(it => {
+      scheduleItems.push({
+        id: 'ai_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+        time: it.time || '',
+        title: it.title || '',
+        done: false,
+        ai: true
+      });
+    });
+    csSet('schedule', JSON.stringify(scheduleItems));
+    renderSchedule();
+    tg?.HapticFeedback?.notificationOccurred('success');
+  } catch(e) {
+    const msg = lang==='en'?'Error generating schedule. Try again.':lang==='ru'?'Ошибка. Попробуй ещё раз.':'Помилка. Спробуй ще раз.';
+    alert(msg);
+  }
+  btn.disabled = false;
+  btn.textContent = lang==='en'?'Regenerate':lang==='ru'?'Обновить':'Оновити';
+}
+
+function getHabitAlert() {
+  if (!habits.length) return null;
+  const today = new Date().toDateString();
+  const doneToday = habits.filter(h => h.done && h.lastReset === today).length;
+  const hour = new Date().getHours();
+
+  // Серія під загрозою (streak >= 3 і не відмічено сьогодні)
+  const atRisk = habits.filter(h => (h.streak||0) >= 3 && !h.done);
+  if (atRisk.length) {
+    const names = atRisk.map(h => `"${h.name}"`).join(', ');
+    return `🔥 Серія під загрозою! ${names} — відміть сьогодні, щоб не втратити прогрес.`;
+  }
+
+  // Вечір, і нічого не зроблено
+  if (doneToday === 0 && hour >= 19) {
+    return `⚠️ Сьогодні жоден запис ще не відмічено. Ще є час!`;
+  }
+
+  return null;
+}
+
+function showAlert(serverAlert) {
+  const habitAlert = getHabitAlert();
+  const parts = [serverAlert, habitAlert].filter(Boolean);
+  const alertEl = document.getElementById('ai-alert');
+  if (parts.length) {
+    document.getElementById('ai-alert-text').textContent = parts.join('\n\n');
+    alertEl.classList.add('on');
+    tg?.HapticFeedback?.notificationOccurred('warning');
+  } else {
+    alertEl.classList.remove('on');
+  }
+}
 
 async function loadAI() {
   const btn = document.getElementById('ai-btn');
   const textEl = document.getElementById('ai-text');
-  if (!goals.length) { textEl.textContent = L('ai-no-goals'); return; }
+  if (!goals.length) { textEl.textContent = L('ai-no-goals'); showAlert(null); return; }
 
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span>';
@@ -920,9 +1138,11 @@ async function loadAI() {
     if (!r.ok) throw 0;
     const d = await r.json();
     textEl.textContent = d.advice;
+    showAlert(d.alert || null);
     tg?.HapticFeedback?.notificationOccurred('success');
   } catch(_) {
     textEl.textContent = L('ai-err');
+    showAlert(null);
   }
   btn.disabled = false;
   btn.textContent = 'Оновити';
