@@ -189,7 +189,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
       <div class="dragon-wrap">
         <span class="dragon-stage" id="d-emoji">🥚</span>
         <div class="dragon-name" id="d-name">Зародок</div>
-        <div class="dragon-sub" id="d-sub">Виконуй звички, щоб прокачати дракончика</div>
+        <div class="dragon-sub" id="d-sub">Відстежуй прогрес, прокачуй дракончика</div>
         <div class="xp-bar-wrap"><div class="xp-bar" id="d-bar" style="width:0%"></div></div>
         <div class="xp-label"><span id="d-xp-cur">0 XP</span><span id="d-xp-next">потрібно 15 XP</span></div>
       </div>
@@ -225,7 +225,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
     </div>
     <div class="sec-lbl" id="txt-today-hab">Сьогодні</div>
     <div id="hab-list"></div>
-    <button class="add-btn" onclick="openHabModal()"><span>＋</span><span id="txt-add-hab">Додати звичку</span></button>
+    <button class="add-btn" onclick="openHabModal()"><span>＋</span><span id="txt-add-hab">Додати запис</span></button>
   </div>
 </div>
 
@@ -288,7 +288,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
   </div>
   <div class="ni" id="ni-habits" onclick="go('habits')">
     <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-    <span id="nl-habits">Звички</span>
+    <span id="nl-habits">Трекер</span>
   </div>
   <div class="ni" id="ni-goals" onclick="go('goals')">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7"/><line x1="12" y1="2" x2="12" y2="5"/></svg>
@@ -308,9 +308,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
 <div class="overlay" id="hab-modal" onclick="closeM(event,'hab-modal')">
   <div class="mbox">
     <div class="mhandle"></div>
-    <div class="mtitle" id="hm-title">Нова звичка</div>
+    <div class="mtitle" id="hm-title">Новий запис</div>
     <input type="hidden" id="hm-id">
-    <div class="field"><label>Назва</label><input id="hm-name" placeholder="Наприклад: Зарядка 10 хв"></div>
+    <div class="field"><label>Назва</label><input id="hm-name" placeholder="Наприклад: Температура, Спорт, Медитація"></div>
     <div class="field"><label>Емодзі (необов'язково)</label><input id="hm-emoji" placeholder="🏃 🧘 📚 💧" maxlength="4"></div>
     <div class="field">
       <label>Частота</label>
@@ -453,10 +453,10 @@ function setTheme(t) { applyTheme(t); tg?.HapticFeedback?.selectionChanged(); }
 
 // ── Lang ──────────────────────────────────────────────────────────────────
 const I = {
-  uk: { dragon:'Дракон',habits:'Звички',goals:'Цілі',progress:'Прогрес',settings:'Налаштування',
-        'add-hab':'Додати звичку','add-goal':'Додати ціль','new-hab':'Нова звичка','edit-hab':'Редагувати',
+  uk: { dragon:'Дракон',habits:'Трекер',goals:'Цілі',progress:'Прогрес',settings:'Налаштування',
+        'add-hab':'Додати запис','add-goal':'Додати ціль','new-hab':'Новий запис','edit-hab':'Редагувати',
         'new-goal':'Нова ціль','edit-goal':'Редагувати ціль','stars':'Підтримати зірками Telegram',
-        'today-hab':'Сьогодні','hab-title':'Звички','goal-title':'Цілі','prog-title':'Прогрес','set-title':'Налаштування',
+        'today-hab':'Сьогодні','hab-title':'Трекер','goal-title':'Цілі','prog-title':'Прогрес','set-title':'Налаштування',
         'theme':'Тема','lang-lbl':'Мова',
         'h5l':'🧭 Горизонт 5 років','h3l':'🎯 Горизонт 3 роки',
         'greet-m':'Доброго ранку','greet-d':'Добрий день','greet-e':'Добрий вечір',
@@ -468,10 +468,10 @@ const I = {
         'prog-sub':'Статистика',
         'cat-label':'Категорія','add-cat':'＋ Нова','auto':'авто',
       },
-  ru: { dragon:'Дракон',habits:'Привычки',goals:'Цели',progress:'Прогресс',settings:'Настройки',
-        'add-hab':'Добавить привычку','add-goal':'Добавить цель','new-hab':'Новая привычка','edit-hab':'Редактировать',
+  ru: { dragon:'Дракон',habits:'Трекер',goals:'Цели',progress:'Прогресс',settings:'Настройки',
+        'add-hab':'Добавить запись','add-goal':'Добавить цель','new-hab':'Новая запись','edit-hab':'Редактировать',
         'new-goal':'Новая цель','edit-goal':'Редактировать цель','stars':'Поддержать звёздами Telegram',
-        'today-hab':'Сегодня','hab-title':'Привычки','goal-title':'Цели','prog-title':'Прогресс','set-title':'Настройки',
+        'today-hab':'Сегодня','hab-title':'Трекер','goal-title':'Цели','prog-title':'Прогресс','set-title':'Настройки',
         'theme':'Тема','lang-lbl':'Язык',
         'h5l':'🧭 Горизонт 5 лет','h3l':'🎯 Горизонт 3 года',
         'greet-m':'Доброе утро','greet-d':'Добрый день','greet-e':'Добрый вечер',
@@ -483,10 +483,10 @@ const I = {
         'prog-sub':'Статистика',
         'cat-label':'Категория','add-cat':'＋ Нова','auto':'авто',
       },
-  en: { dragon:'Dragon',habits:'Habits',goals:'Goals',progress:'Progress',settings:'Settings',
-        'add-hab':'Add habit','add-goal':'Add goal','new-hab':'New Habit','edit-hab':'Edit Habit',
+  en: { dragon:'Dragon',habits:'Tracker',goals:'Goals',progress:'Progress',settings:'Settings',
+        'add-hab':'Add entry','add-goal':'Add goal','new-hab':'New Entry','edit-hab':'Edit Entry',
         'new-goal':'New Goal','edit-goal':'Edit Goal','stars':'Support with Telegram Stars',
-        'today-hab':'Today','hab-title':'Habits','goal-title':'Goals','prog-title':'Progress','set-title':'Settings',
+        'today-hab':'Today','hab-title':'Tracker','goal-title':'Goals','prog-title':'Progress','set-title':'Settings',
         'theme':'Theme','lang-lbl':'Language',
         'h5l':'🧭 5-year horizon','h3l':'🎯 3-year horizon',
         'greet-m':'Good morning','greet-d':'Good afternoon','greet-e':'Good evening',
@@ -688,27 +688,30 @@ function getCatById(id) {
 
 function autoCat(name) {
   const n = name.toLowerCase();
-  if (/здоров|лікар|спорт|йога|вага|сон/.test(n)) return 'health';
-  if (/навч|курс|книг|skill|learn/.test(n)) return 'growth';
-  if (/робот|кар'єр|проект|work|job/.test(n)) return 'work';
-  if (/гроші|заробіт|фінанс|бюджет/.test(n)) return 'finance';
-  if (/стосун|відносин|друз|сім|relation/.test(n)) return 'relations';
+  if (/здоров|лікар|спорт|йога|вага|сон|температур|аналіз|медик|тиск|вітамін|пробіжк/.test(n)) return 'health';
+  if (/навч|курс|книг|skill|learn|вивч|js|python|розвит|читан|навич|програм|мов/.test(n)) return 'growth';
+  if (/робот|кар'єр|проект|work|job|знайт|пошук|вакансі|резюме|офіс/.test(n)) return 'work';
+  if (/гроші|заробіт|фінанс|бюджет|заробля|дохід|зарплат|прибуток|накопич|інвест/.test(n)) return 'finance';
+  if (/стосун|відносин|друз|сім|relation|знайом|побачен/.test(n)) return 'relations';
   return '';
 }
 
-function buildCatChips() {
+function buildCatChips(aiLoading) {
   const all = [...DEFAULT_CATS, ...customCats];
   const el = document.getElementById('gm-cats');
   if (!el) return;
-  el.innerHTML = all.map(c => `
+  const loadingChip = aiLoading ? `<span class="cat-chip" style="opacity:.5;cursor:default"><span class="spin"></span> AI...</span>` : '';
+  el.innerHTML = loadingChip + all.map(c => `
     <button class="cat-chip ${selGoalCat===c.id?'on':''}" onclick="selCat('${c.id}')">
       ${c.icon} ${c.label[lang]||c.label.uk}
     </button>
   `).join('') + `<button class="cat-chip" onclick="addCustomCat()">＋ ${L('add-cat')}</button>`;
 }
 
+let userPickedCat = false;
 function selCat(id) {
   selGoalCat = selGoalCat === id ? '' : id;
+  userPickedCat = true;
   buildCatChips();
 }
 
@@ -792,12 +795,29 @@ function openGoalModal(id) {
     selGoalColor = COLORS[0];
     selGoalCat = '';
   }
+  userPickedCat = false;
   buildCatChips();
   highlightColor('gm-colors', selGoalColor);
   document.getElementById('goal-modal').classList.add('on');
   const nameInput = document.getElementById('gm-name');
+  let catDebounce = null;
   nameInput.oninput = () => {
-    if (!selGoalCat) { selGoalCat = autoCat(nameInput.value); buildCatChips(); }
+    if (userPickedCat) return;
+    const val = nameInput.value.trim();
+    clearTimeout(catDebounce);
+    if (val.length < 3) { selGoalCat = ''; buildCatChips(); return; }
+    buildCatChips(true); // показати спіннер
+    catDebounce = setTimeout(async () => {
+      if (userPickedCat) return;
+      try {
+        const r = await fetch(CAT_URL, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({name: val, lang})
+        });
+        const d = await r.json();
+        if (!userPickedCat) { selGoalCat = d.cat || ''; buildCatChips(); }
+      } catch(_) { buildCatChips(); }
+    }, 700);
   };
   setTimeout(()=>nameInput.focus(),300);
 }
@@ -875,7 +895,9 @@ function renderProfile() {
 }
 
 // ── AI ────────────────────────────────────────────────────────────────────
-const API_URL = 'https://78-27-237-243.sslip.io/advice';
+const API_BASE = 'https://78-27-237-243.sslip.io';
+const API_URL  = API_BASE + '/advice';
+const CAT_URL  = API_BASE + '/categorize';
 
 async function loadAI() {
   const btn = document.getElementById('ai-btn');
