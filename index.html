@@ -418,7 +418,7 @@ async function init() {
   if (s.goals) try { goals = JSON.parse(s.goals); } catch(_){}
   if (s.custom_cats) try { customCats = JSON.parse(s.custom_cats); } catch(_){}
   if (s.xp) totalXp = parseInt(s.xp)||0;
-  if (s.oai_key) document.getElementById('oai-key').value = s.oai_key;
+  // oai_key is server-side only
   if (s.h5) document.getElementById('h5').value = s.h5;
   if (s.h3) document.getElementById('h3').value = s.h3;
 
