@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -915,6 +916,7 @@ function go(tab) {
     if (!schedCurDate) schedCurDate = todayKey();
     loadSchedForDate(schedCurDate).then(() => { renderSchedNav(); renderSchedView(); });
   }
+  if (tab==='settings') renderProfile();
   tg?.HapticFeedback?.selectionChanged();
 }
  
@@ -1376,27 +1378,39 @@ function makeAvatarHTML(userId, size=58) {
 }
  
 // ── Profile ───────────────────────────────────────────────────────────────
+let _profileApplied = false;
+function applyUserData(u) {
+  if (!u) return false;
+  _profileApplied = true;
+  const full = [u.first_name, u.last_name].filter(Boolean).join(' ');
+  // Settings tab
+  const nameEl = document.getElementById('u-name');
+  const subEl  = document.getElementById('u-sub');
+  const av     = document.getElementById('av-big');
+  if (nameEl) nameEl.textContent = full || '—';
+  if (subEl)  subEl.textContent  = u.username ? '@' + u.username : 'Aura';
+  if (av)     av.innerHTML       = makeAvatarHTML(u.id, 58);
+  // Dragon tab header avatar
+  const dvAv = document.getElementById('d-av');
+  if (dvAv)  dvAv.innerHTML      = makeAvatarHTML(u.id, 32);
+  // Also update greeting with name
+  const h = new Date().getHours();
+  const greet = h<12?L('greet-m'):h<18?L('greet-d'):L('greet-e');
+  const greetEl = document.getElementById('d-greeting');
+  if (greetEl) greetEl.textContent = `${greet}, ${full.split(' ')[0] || full}!`;
+  return true;
+}
 function renderProfile() {
-  function applyUser(u) {
-    if (!u) return false;
-    const full = [u.first_name, u.last_name].filter(Boolean).join(' ');
-    const nameEl = document.getElementById('u-name');
-    const subEl  = document.getElementById('u-sub');
-    const av     = document.getElementById('av-big');
-    const dvAv   = document.getElementById('d-av');
-    if (nameEl) nameEl.textContent = full || '—';
-    if (subEl)  subEl.textContent  = u.username ? '@' + u.username : 'Aura';
-    if (av)     av.innerHTML       = makeAvatarHTML(u.id, 58);
-    if (dvAv)   dvAv.innerHTML     = makeAvatarHTML(u.id, 32);
-    return true;
-  }
-  // Try immediately, then retry with increasing delays
-  // Telegram SDK may populate initDataUnsafe slightly after script execution
-  if (!applyUser(tg?.initDataUnsafe?.user)) {
-    [300, 700, 1500, 3000].forEach(ms =>
-      setTimeout(() => applyUser(tg?.initDataUnsafe?.user), ms)
-    );
-  }
+  if (applyUserData(tg?.initDataUnsafe?.user)) return;
+  // Retry with increasing delays — Telegram SDK sometimes lags
+  [200, 500, 1000, 2000, 4000].forEach(ms =>
+    setTimeout(() => { if (!_profileApplied) applyUserData(tg?.initDataUnsafe?.user); }, ms)
+  );
+}
+// Also hook into Telegram viewport/theme events as additional trigger
+if (tg) {
+  tg.onEvent('viewportChanged', () => { if (!_profileApplied) applyUserData(tg?.initDataUnsafe?.user); });
+  tg.onEvent('themeChanged',    () => { if (!_profileApplied) applyUserData(tg?.initDataUnsafe?.user); });
 }
  
 // ── Schedule ──────────────────────────────────────────────────────────────
