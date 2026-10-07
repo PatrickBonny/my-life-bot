@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -285,7 +284,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
         <div class="dragon-name" id="d-name">Зародок</div>
         <div class="dragon-sub" id="d-sub">Відстежуй прогрес, прокачуй дракончика</div>
         <div class="xp-bar-wrap"><div class="xp-bar" id="d-bar" style="width:0%"></div></div>
-        <div class="xp-label"><span id="d-xp-cur">0 XP</span><span id="d-xp-next">потрібно 15 XP</span></div>
+        <div class="xp-label"><span id="d-xp-cur">0 XP</span><span id="d-xp-next">→ 15 XP</span></div>
       </div>
     </div>
  
@@ -294,11 +293,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
  
     <div class="sec-lbl" id="txt-h5l">🧭 Горизонт 5 років</div>
     <div class="card" style="border-left:3px solid var(--acc)">
-      <textarea class="horiz-in" id="h5" placeholder="Де я буду через 5 років..." rows="2"></textarea>
+      <textarea class="horiz-in" id="h5" placeholder="Де я буду через 5 років..." rows="2" data-ph-key="h5-ph"></textarea>
     </div>
     <div class="sec-lbl" id="txt-h3l">🎯 Горизонт 3 роки</div>
     <div class="card" style="border-left:3px solid var(--pink)">
-      <textarea class="horiz-in" id="h3" placeholder="Де я буду через 3 роки..." rows="2"></textarea>
+      <textarea class="horiz-in" id="h3" placeholder="Де я буду через 3 роки..." rows="2" data-ph-key="h3-ph"></textarea>
     </div>
   </div>
 </div>
@@ -312,10 +311,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
   <div class="pane">
     <div class="ai-card">
       <div class="ai-top">
-        <div class="ai-badge">✦ AI-порада</div>
+        <div class="ai-badge" id="ai-badge-dragon">✦ AI-порада</div>
         <button class="ai-btn" id="ai-btn" onclick="loadAI()">Оновити</button>
       </div>
-      <div class="ai-text" id="ai-text">Натисни «Оновити», щоб AI порадив щось на основі твоїх цілей.</div>
+      <div class="ai-text" id="ai-text" data-hint="1">Натисни «Оновити», щоб AI порадив щось на основі твоїх цілей.</div>
     </div>
     <div class="alert-card" id="ai-alert">
       <div class="alert-icon">🚨</div>
@@ -337,8 +336,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
   </div>
   <div class="pane">
     <div class="brain-card">
-      <div class="ai-badge">✦ AI-аналіз цілей</div>
-      <textarea class="brain-ta" id="brain-dump" rows="5" placeholder="Напиши вільно: що зараз хвилює, чого хочеш досягти, що планував зробити давно, що заважає... AI розбере це в конкретні цілі і позначить найважливіші ⭐"></textarea>
+      <div class="ai-badge" id="ai-badge-goals">✦ AI-аналіз цілей</div>
+      <textarea class="brain-ta" id="brain-dump" rows="5" placeholder="Напиши вільно: що зараз хвилює, чого хочеш досягти, що планував зробити давно, що заважає... AI розбере це в конкретні цілі і позначить найважливіші ⭐" data-ph-key="brain-ph"></textarea>
       <div style="display:flex;justify-content:flex-end;margin-top:8px">
         <button class="ai-btn" id="brain-btn" onclick="parseBrainDump()">✦ Розібрати в цілі</button>
       </div>
@@ -358,7 +357,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
  
 <!-- ══ SCHEDULE ══ -->
 <div class="scr" id="s-schedule">
-  <div class="hdr"><div><div class="hdr-title">Розклад</div></div></div>
+  <div class="hdr"><div><div class="hdr-title" id="txt-sched-title">Розклад</div></div></div>
   <div class="sched-nav">
     <button class="sched-nav-btn" onclick="navSchedDate(-1)">‹</button>
     <div class="sched-nav-date" id="sched-nav-date">Сьогодні</div>
@@ -366,7 +365,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
   </div>
   <div class="sched-tabs">
     <button class="sched-tab on" id="stab-day" onclick="setSchedView('day')">День</button>
-    <button class="sched-tab" id="stab-week" onclick="setSchedView('week')">Тиждень</button>
+    <button class="sched-tab" id="stab-week" onclick="setSchedView('week')">Тижд.</button>
     <button class="sched-tab" id="stab-month" onclick="setSchedView('month')">Місяць</button>
   </div>
   <div class="sched-week" id="sched-week-row" style="display:none"></div>
@@ -375,13 +374,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
   <div class="pane" id="sched-pane">
     <div class="sched-ai-card">
       <div class="sched-ai-left">
-        <div class="ai-badge">✦ AI-планувальник</div>
-        <div style="font-size:12px;color:var(--tx3);margin-top:1px">Складе розклад на основі твоїх цілей</div>
+        <div class="ai-badge" id="ai-badge-sched">✦ AI-планувальник</div>
+        <div style="font-size:12px;color:var(--tx3);margin-top:1px" id="sched-ai-sub-txt">Складе розклад на основі твоїх цілей</div>
       </div>
       <button class="sched-ai-btn" id="sched-ai-btn" onclick="loadScheduleAI()">Згенерувати</button>
     </div>
     <div id="sched-list"></div>
-    <button class="add-btn" onclick="openSchedModal()"><span>＋</span><span>Додати вручну</span></button>
+    <button class="add-btn" onclick="openSchedModal()"><span>＋</span><span id="txt-add-manual">Додати вручну</span></button>
   </div>
 </div>
  
@@ -398,16 +397,16 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
  
     <div class="sitem" onclick="openM('how-modal')" style="margin-bottom:8px">
       <div class="sitem-icon">❓</div>
-      <div class="sitem-body"><div class="sitem-title" id="txt-how-btn">Як це працює?</div><div class="sitem-sub">Інструкція по всіх функціях</div></div>
+      <div class="sitem-body"><div class="sitem-title" id="txt-how-btn">Як це працює?</div><div class="sitem-sub" id="txt-how-sub">Інструкція по всіх функціях</div></div>
       <div style="color:var(--tx3);font-size:18px">›</div>
     </div>
  
     <div class="sec-lbl" id="txt-slbl-theme">Тема</div>
     <div class="card" style="padding:10px">
       <div class="pick-row">
-        <div class="pick-opt on" id="th-dark" onclick="setTheme('dark')"><span class="big">🌙</span><span>Темна</span></div>
-        <div class="pick-opt" id="th-light" onclick="setTheme('light')"><span class="big">☀️</span><span>Світла</span></div>
-        <div class="pick-opt" id="th-auto" onclick="setTheme('auto')"><span class="big">🌓</span><span>Авто</span></div>
+        <div class="pick-opt on" id="th-dark" onclick="setTheme('dark')"><span class="big">🌙</span><span id="th-dark-lbl">Темна</span></div>
+        <div class="pick-opt" id="th-light" onclick="setTheme('light')"><span class="big">☀️</span><span id="th-light-lbl">Світла</span></div>
+        <div class="pick-opt" id="th-auto" onclick="setTheme('auto')"><span class="big">🌓</span><span id="th-auto-lbl">Авто</span></div>
       </div>
     </div>
  
@@ -457,18 +456,18 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
     <div class="mhandle"></div>
     <div class="mtitle" id="hm-title">Новий запис</div>
     <input type="hidden" id="hm-id">
-    <div class="field"><label>Назва</label><input id="hm-name" placeholder="Наприклад: Температура, Спорт, Медитація"></div>
-    <div class="field"><label>Емодзі (необов'язково)</label><div class="emoji-wrap"><input id="hm-emoji" placeholder="🏃 🧘 📚 💧" maxlength="4"><button type="button" class="eopen" onclick="openEmojiPicker('hm-emoji',this)">😊</button></div></div>
+    <div class="field"><label id="lbl-hm-name">Назва</label><input id="hm-name" placeholder="Наприклад: Температура, Спорт, Медитація"></div>
+    <div class="field"><label id="lbl-hm-emoji">Емодзі (необов'язково)</label><div class="emoji-wrap"><input id="hm-emoji" placeholder="🏃 🧘 📚 💧" maxlength="4"><button type="button" class="eopen" onclick="openEmojiPicker('hm-emoji',this)">😊</button></div></div>
     <div class="field">
-      <label>Частота</label>
+      <label id="lbl-hm-freq">Частота</label>
       <div class="freq-row">
         <div class="freq-opt on" id="fr-daily" onclick="selFreq('daily')">Щодня</div>
         <div class="freq-opt" id="fr-weekdays" onclick="selFreq('weekdays')">Будні</div>
         <div class="freq-opt" id="fr-weekends" onclick="selFreq('weekends')">Вихідні</div>
       </div>
     </div>
-    <div class="field"><label>Колір</label><div class="color-row" id="hm-colors"></div></div>
-    <button class="sbtn" onclick="saveHabit()">Зберегти</button>
+    <div class="field"><label id="lbl-hm-color">Колір</label><div class="color-row" id="hm-colors"></div></div>
+    <button class="sbtn" id="hm-save-btn" onclick="saveHabit()">Зберегти</button>
   </div>
 </div>
  
@@ -478,11 +477,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
     <div class="mhandle"></div>
     <div class="mtitle" id="gm-title">Нова ціль</div>
     <input type="hidden" id="gm-id">
-    <div class="field"><label>Назва цілі</label><input id="gm-name" placeholder="Наприклад: Знайти нову роботу"></div>
-    <div class="field"><label>Опис (необов'язково)</label><textarea id="gm-desc" placeholder="Деталі, кроки, дедлайн..."></textarea></div>
+    <div class="field"><label id="lbl-gm-name">Назва цілі</label><input id="gm-name" placeholder="Наприклад: Знайти нову роботу"></div>
+    <div class="field"><label id="lbl-gm-desc">Опис (необов'язково)</label><textarea id="gm-desc" placeholder="Деталі, кроки, дедлайн..."></textarea></div>
     <div class="field"><label id="gm-cat-label">Категорія</label><div class="cat-chips" id="gm-cats"></div></div>
-    <div class="field"><label>Колір</label><div class="color-row" id="gm-colors"></div></div>
-    <button class="sbtn" onclick="saveGoal()">Зберегти</button>
+    <div class="field"><label id="lbl-gm-color">Колір</label><div class="color-row" id="gm-colors"></div></div>
+    <button class="sbtn" id="gm-save-btn" onclick="saveGoal()">Зберегти</button>
   </div>
 </div>
  
@@ -490,10 +489,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
 <div class="overlay" id="cat-modal" onclick="closeM(event,'cat-modal')">
   <div class="mbox">
     <div class="mhandle"></div>
-    <div class="mtitle">Нова категорія</div>
-    <div class="field"><label>Назва</label><input id="cat-name-inp" placeholder="Наприклад: Творчість" maxlength="30"></div>
-    <div class="field"><label>Емодзі</label><div class="emoji-wrap"><input id="cat-emoji-inp" placeholder="🎨" maxlength="4"><button type="button" class="eopen" onclick="openEmojiPicker('cat-emoji-inp',this)">😊</button></div></div>
-    <button class="sbtn" onclick="saveCat()">Додати</button>
+    <div class="mtitle" id="cm-title">Нова категорія</div>
+    <div class="field"><label id="lbl-cm-name">Назва</label><input id="cat-name-inp" placeholder="Наприклад: Творчість" maxlength="30"></div>
+    <div class="field"><label id="lbl-cm-emoji">Емодзі</label><div class="emoji-wrap"><input id="cat-emoji-inp" placeholder="🎨" maxlength="4"><button type="button" class="eopen" onclick="openEmojiPicker('cat-emoji-inp',this)">😊</button></div></div>
+    <button class="sbtn" id="cm-save-btn" onclick="saveCat()">Додати</button>
   </div>
 </div>
  
@@ -502,9 +501,9 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
   <div class="mbox">
     <div class="mhandle"></div>
     <div class="mtitle" id="sm-title-h">Новий запис</div>
-    <div class="field"><label>Час</label><input type="time" id="sm-time" style="font-size:17px"></div>
-    <div class="field"><label>Що робити</label><input id="sm-name" placeholder="Наприклад: Пробіжка 30 хвилин"></div>
-    <button class="sbtn" onclick="saveSched()">Зберегти</button>
+    <div class="field"><label id="lbl-sm-time">Час</label><input type="time" id="sm-time" style="font-size:17px"></div>
+    <div class="field"><label id="lbl-sm-task">Що робити</label><input id="sm-name" placeholder="Наприклад: Пробіжка 30 хвилин"></div>
+    <button class="sbtn" id="sm-save-btn" onclick="saveSched()">Зберегти</button>
   </div>
 </div>
  
@@ -533,32 +532,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
     <div class="mhandle"></div>
     <div class="mtitle" id="txt-how-title">Як користуватись Aura</div>
  
-    <div style="display:flex;flex-direction:column;gap:14px;padding-bottom:8px">
-      <div class="card" style="padding:14px 16px">
-        <div style="font-size:16px;font-weight:700;margin-bottom:6px">🐉 Дракон</div>
-        <div style="font-size:13px;color:var(--tx2);line-height:1.7">Головний екран. Тут живе твій дракончик — він росте разом з тобою. Виконуй звички і цілі → отримуй XP → дракончик еволюціонує. Всього 15 форм. Також тут є поля «Горизонт 5 і 3 роки» — записуй свій великий план.</div>
-      </div>
-      <div class="card" style="padding:14px 16px">
-        <div style="font-size:16px;font-weight:700;margin-bottom:6px">✅ Трекер</div>
-        <div style="font-size:13px;color:var(--tx2);line-height:1.7">Щоденні звички. Натисни «＋ Додати запис» → введи назву, вибери емодзі, частоту і колір. Щодня відмічай виконані звички — так будується серія 🔥. За кожну виконану звичку отримуєш XP.</div>
-      </div>
-      <div class="card" style="padding:14px 16px">
-        <div style="font-size:16px;font-weight:700;margin-bottom:6px">🎯 Цілі</div>
-        <div style="font-size:13px;color:var(--tx2);line-height:1.7">Довгострокові цілі. Вгорі є поле «AI-аналіз» — напиши туди вільним текстом все що хвилює, хочеш досягти або відклав давно. AI сам розбере це в конкретні цілі і позначить найважливіші ⭐. Також можна додавати вручну. Ціль можна позначити виконаною ✓ і отримати +50 XP.</div>
-      </div>
-      <div class="card" style="padding:14px 16px">
-        <div style="font-size:16px;font-weight:700;margin-bottom:6px">📊 Прогрес</div>
-        <div style="font-size:13px;color:var(--tx2);line-height:1.7">Статистика. Тут видно загальний XP, рекорд серії і скільки звичок виконано сьогодні (у вигляді кільця). Також можна відмічати звички прямо тут.</div>
-      </div>
-      <div class="card" style="padding:14px 16px">
-        <div style="font-size:16px;font-weight:700;margin-bottom:6px">📅 Розклад</div>
-        <div style="font-size:13px;color:var(--tx2);line-height:1.7">Планувальник дня. Натисни «✦ Згенерувати» — AI складе розклад на основі твоїх цілей і звичок. Перемикай між Днем, Тижнем і Місяцем стрілочками вгорі. Кожен день зберігається окремо. За виконане завдання в розкладі +1 XP.</div>
-      </div>
-      <div class="card" style="padding:14px 16px">
-        <div style="font-size:16px;font-weight:700;margin-bottom:6px">⚙️ Налаштування</div>
-        <div style="font-size:13px;color:var(--tx2);line-height:1.7">Тут можна змінити тему (темна/світла/авто) і мову (UA/RU/EN). А ще підтримати розробника зірками Telegram ⭐ — це дуже мотивує!</div>
-      </div>
-    </div>
+    <div id="how-modal-body" style="display:flex;flex-direction:column;gap:14px;padding-bottom:8px"></div>
   </div>
 </div>
  
@@ -698,6 +672,46 @@ const I = {
         'cat-label':'Категорія','add-cat':'Нова','auto':'авто',
         'brain-btn':'✦ Розібрати в цілі','how-btn':'Як це працює?','how-title':'Як користуватись Aura',
         'streak-record':'Рекорд серії','habits-today-lbl':'Звички сьогодні',
+        // Frequencies
+        'freq-daily':'Щодня','freq-weekdays':'Будні','freq-weekends':'Вихідні',
+        // Goals & categories
+        'important-lbl':'Важлива','other-cat':'✦ Інше',
+        'goals-added': n=>`✦ Додано ${n} ${n===1?'ціль':n<5?'цілі':'цілей'}`,
+        'parsing':'Аналізую...','brain-err':'Помилка AI, спробуй ще раз.',
+        // Schedule
+        'sched-title':'Розклад','tab-day':'День','tab-week':'Тиждень','tab-month':'Місяць',
+        'sched-ai-sub':'Складе розклад на основі твоїх цілей',
+        'generate':'Згенерувати','regenerate':'Оновити',
+        'add-manual':'Додати вручну',
+        'sched-empty':'Натисни «Згенерувати» або додай вручну',
+        'sched-new':'Новий запис','sched-edit':'Редагувати',
+        'sched-err':'Помилка. Спробуй ще раз.',
+        'sched-no-goals':'Спочатку додай хоча б одну ціль.',
+        // Alerts
+        'at-risk': names=>`🔥 Серія під загрозою! ${names} — відміть сьогодні, щоб не втратити прогрес.`,
+        'none-done':'⚠️ Сьогодні жоден запис ще не відмічено. Ще є час!',
+        // Misc UI
+        'refresh':'Оновити','stars-tg-only':'Підтримка зірками доступна лише в Telegram',
+        'days-short':'дн.','how-sub':'Інструкція по всіх функціях',
+        // Theme options
+        'theme-dark':'Темна','theme-light':'Світла','theme-auto':'Авто',
+        // Modal field labels
+        'field-name':'Назва','field-emoji-opt':'Емодзі (необовʼязково)',
+        'field-freq':'Частота','field-color':'Колір','save':'Зберегти',
+        'field-goal-name':'Назва цілі','field-goal-desc':'Опис (необовʼязково)',
+        'cat-title':'Нова категорія','cat-add-btn':'Додати',
+        'field-time':'Час','field-task':'Що робити',
+        'hab-name-ph':'Наприклад: Температура, Спорт, Медитація',
+        'goal-name-ph':'Наприклад: Знайти нову роботу',
+        'goal-desc-ph':'Деталі, кроки, дедлайн...',
+        'sched-task-ph':'Наприклад: Пробіжка 30 хвилин',
+        'cat-name-ph':'Наприклад: Творчість',
+        'h5-ph':'Де я буду через 5 років...',
+        'h3-ph':'Де я буду через 3 роки...',
+        'brain-ph':'Напиши вільно: що зараз хвилює, чого хочеш досягти, що планував зробити давно, що заважає... AI розбере це в конкретні цілі і позначить найважливіші ⭐',
+        'ai-badge-dragon':'✦ AI-порада',
+        'ai-badge-goals':'✦ AI-аналіз цілей',
+        'ai-badge-sched':'✦ AI-планувальник',
       },
   ru: { dragon:'Дракон',habits:'Трекер',goals:'Цели',progress:'Прогресс',settings:'Настройки',
         'add-hab':'Добавить запись','add-goal':'Добавить цель','new-hab':'Новая запись','edit-hab':'Редактировать',
@@ -715,6 +729,46 @@ const I = {
         'cat-label':'Категория','add-cat':'Новая','auto':'авто',
         'brain-btn':'✦ Разобрать в цели','how-btn':'Как это работает?','how-title':'Как пользоваться Aura',
         'streak-record':'Рекорд серии','habits-today-lbl':'Привычки сегодня',
+        // Frequencies
+        'freq-daily':'Каждый день','freq-weekdays':'Будни','freq-weekends':'Выходные',
+        // Goals & categories
+        'important-lbl':'Важная','other-cat':'✦ Другое',
+        'goals-added': n=>`✦ Добавлено ${n} ${n===1?'цель':n<5?'цели':'целей'}`,
+        'parsing':'Анализирую...','brain-err':'Ошибка AI, попробуй ещё.',
+        // Schedule
+        'sched-title':'Расписание','tab-day':'День','tab-week':'Неделя','tab-month':'Месяц',
+        'sched-ai-sub':'Составит расписание на основе твоих целей',
+        'generate':'Сгенерировать','regenerate':'Обновить',
+        'add-manual':'Добавить вручную',
+        'sched-empty':'Нажми «Сгенерировать» или добавь вручную',
+        'sched-new':'Новая запись','sched-edit':'Редактировать',
+        'sched-err':'Ошибка. Попробуй ещё раз.',
+        'sched-no-goals':'Сначала добавь хотя бы одну цель.',
+        // Alerts
+        'at-risk': names=>`🔥 Серия под угрозой! ${names} — отметь сегодня, чтобы не потерять прогресс.`,
+        'none-done':'⚠️ Сегодня ни одна запись ещё не отмечена. Ещё есть время!',
+        // Misc UI
+        'refresh':'Обновить','stars-tg-only':'Поддержка звёздами доступна только в Telegram',
+        'days-short':'дн.','how-sub':'Инструкция по всем функциям',
+        // Theme options
+        'theme-dark':'Тёмная','theme-light':'Светлая','theme-auto':'Авто',
+        // Modal field labels
+        'field-name':'Название','field-emoji-opt':'Эмодзи (необязательно)',
+        'field-freq':'Частота','field-color':'Цвет','save':'Сохранить',
+        'field-goal-name':'Название цели','field-goal-desc':'Описание (необязательно)',
+        'cat-title':'Новая категория','cat-add-btn':'Добавить',
+        'field-time':'Время','field-task':'Что делать',
+        'hab-name-ph':'Например: Температура, Спорт, Медитация',
+        'goal-name-ph':'Например: Найти новую работу',
+        'goal-desc-ph':'Детали, шаги, дедлайн...',
+        'sched-task-ph':'Например: Пробежка 30 минут',
+        'cat-name-ph':'Например: Творчество',
+        'h5-ph':'Где я буду через 5 лет...',
+        'h3-ph':'Где я буду через 3 года...',
+        'brain-ph':'Пиши свободно: что сейчас волнует, чего хочешь достичь, что давно планировал сделать, что мешает... AI разберёт это в конкретные цели и отметит самые важные ⭐',
+        'ai-badge-dragon':'✦ AI-совет',
+        'ai-badge-goals':'✦ AI-анализ целей',
+        'ai-badge-sched':'✦ AI-планировщик',
       },
   en: { dragon:'Dragon',habits:'Tracker',goals:'Goals',progress:'Progress',settings:'Settings',
         'add-hab':'Add entry','add-goal':'Add goal','new-hab':'New Entry','edit-hab':'Edit Entry',
@@ -732,6 +786,46 @@ const I = {
         'cat-label':'Category','add-cat':'New','auto':'auto',
         'brain-btn':'✦ Extract goals','how-btn':'How it works?','how-title':'How to use Aura',
         'streak-record':'Best streak','habits-today-lbl':'Habits today',
+        // Frequencies
+        'freq-daily':'Every day','freq-weekdays':'Weekdays','freq-weekends':'Weekends',
+        // Goals & categories
+        'important-lbl':'Important','other-cat':'✦ Other',
+        'goals-added': n=>`✦ Added ${n} goal${n===1?'':'s'}`,
+        'parsing':'Analyzing...','brain-err':'AI error, try again.',
+        // Schedule
+        'sched-title':'Schedule','tab-day':'Day','tab-week':'Week','tab-month':'Month',
+        'sched-ai-sub':'Creates a schedule based on your goals',
+        'generate':'Generate','regenerate':'Regenerate',
+        'add-manual':'Add manually',
+        'sched-empty':'Tap Generate or add manually',
+        'sched-new':'New Entry','sched-edit':'Edit',
+        'sched-err':'Error. Try again.',
+        'sched-no-goals':'Add at least one goal first.',
+        // Alerts
+        'at-risk': names=>`🔥 Streak at risk! ${names} — mark today to keep your progress.`,
+        'none-done':'⚠️ Nothing marked today yet. You still have time!',
+        // Misc UI
+        'refresh':'Refresh','stars-tg-only':'Star support is only available in Telegram',
+        'days-short':'d.','how-sub':'Guide to all features',
+        // Theme options
+        'theme-dark':'Dark','theme-light':'Light','theme-auto':'Auto',
+        // Modal field labels
+        'field-name':'Name','field-emoji-opt':'Emoji (optional)',
+        'field-freq':'Frequency','field-color':'Color','save':'Save',
+        'field-goal-name':'Goal name','field-goal-desc':'Description (optional)',
+        'cat-title':'New Category','cat-add-btn':'Add',
+        'field-time':'Time','field-task':'What to do',
+        'hab-name-ph':'e.g. Temperature, Exercise, Meditation',
+        'goal-name-ph':'e.g. Find a new job',
+        'goal-desc-ph':'Details, steps, deadline...',
+        'sched-task-ph':'e.g. Morning run 30 minutes',
+        'cat-name-ph':'e.g. Creativity',
+        'h5-ph':'Where will I be in 5 years...',
+        'h3-ph':'Where will I be in 3 years...',
+        'brain-ph':'Write freely: what worries you now, what you want to achieve, what you have been putting off, what is holding you back... AI will extract specific goals and mark the most important ones ⭐',
+        'ai-badge-dragon':'✦ AI tip',
+        'ai-badge-goals':'✦ AI goal analysis',
+        'ai-badge-sched':'✦ AI scheduler',
       },
 };
 const L = k => (typeof I[lang]?.[k]==='function' ? I[lang][k] : I[lang]?.[k]) ?? k;
@@ -740,23 +834,73 @@ function setLang(l) {
   lang = l; csSet('lang', l);
   ['uk','ru','en'].forEach(x => document.getElementById('lg-'+x)?.classList.toggle('on', x===l));
   updateHome(); renderHabits(); renderGoals(); renderDragon();
+  // Nav labels
   ['nl-dragon','nl-habits','nl-goals','nl-progress','nl-settings'].forEach((id,i) => {
     const keys = ['dragon','habits','goals','progress','settings'];
     const el = document.getElementById(id); if(el) el.textContent = L(keys[i]);
   });
-  document.getElementById('txt-hab-title').textContent = L('hab-title');
-  document.getElementById('txt-goal-title').textContent = L('goal-title');
-  document.getElementById('txt-add-hab').textContent = L('add-hab');
-  document.getElementById('txt-add-goal').textContent = L('add-goal');
-  document.getElementById('txt-stars').textContent = L('stars');
-  document.getElementById('txt-prog-title').textContent = L('prog-title');
-  document.getElementById('txt-prog-sub').textContent = L('prog-sub');
-  document.getElementById('txt-set-title').textContent = L('set-title');
-  document.getElementById('txt-h5l').textContent = L('h5l');
-  document.getElementById('txt-h3l').textContent = L('h3l');
-  document.getElementById('txt-today-hab').textContent = L('today-hab');
-  const howBtn = document.getElementById('txt-how-btn'); if(howBtn) howBtn.textContent = L('how-btn');
-  const howTitle = document.getElementById('txt-how-title'); if(howTitle) howTitle.textContent = L('how-title');
+  // Screen titles & labels
+  const txt = (id, key) => { const el=document.getElementById(id); if(el) el.textContent=L(key); };
+  txt('txt-hab-title','hab-title'); txt('txt-goal-title','goal-title');
+  txt('txt-add-hab','add-hab'); txt('txt-add-goal','add-goal');
+  txt('txt-stars','stars'); txt('txt-prog-title','prog-title');
+  txt('txt-prog-sub','prog-sub'); txt('txt-set-title','set-title');
+  txt('txt-h5l','h5l'); txt('txt-h3l','h3l');
+  txt('txt-today-hab','today-hab');
+  txt('txt-how-btn','how-btn'); txt('txt-how-title','how-title');
+  txt('txt-how-sub','how-sub'); txt('txt-sched-title','sched-title');
+  txt('txt-add-manual','add-manual');
+  // Schedule tabs
+  txt('stab-day','tab-day'); txt('stab-week','tab-week'); txt('stab-month','tab-month');
+  // Schedule AI card
+  txt('sched-ai-sub-txt','sched-ai-sub');
+  const saBtn = document.getElementById('sched-ai-btn');
+  if (saBtn && !saBtn.disabled) saBtn.textContent = L('generate');
+  // AI habits button
+  const aiBtn = document.getElementById('ai-btn');
+  if (aiBtn && !aiBtn.disabled) aiBtn.textContent = L('refresh');
+  // AI hint text (only if it still shows the default hint)
+  const aiText = document.getElementById('ai-text');
+  if (aiText?.dataset.hint) aiText.textContent = L('ai-hint');
+  // Settings: theme options
+  txt('th-dark-lbl','theme-dark'); txt('th-light-lbl','theme-light'); txt('th-auto-lbl','theme-auto');
+  // Habit modal field labels
+  txt('lbl-hm-name','field-name'); txt('lbl-hm-emoji','field-emoji-opt');
+  txt('lbl-hm-freq','field-freq'); txt('lbl-hm-color','field-color');
+  txt('hm-save-btn','save');
+  // Frequency options
+  txt('fr-daily','freq-daily'); txt('fr-weekdays','freq-weekdays'); txt('fr-weekends','freq-weekends');
+  // Goal modal field labels
+  txt('lbl-gm-name','field-goal-name'); txt('lbl-gm-desc','field-goal-desc');
+  txt('lbl-gm-color','field-color'); txt('gm-save-btn','save');
+  const gcl = document.getElementById('gm-cat-label'); if(gcl) gcl.textContent = L('cat-label');
+  // Category modal
+  txt('cm-title','cat-title'); txt('lbl-cm-name','field-name');
+  const cmEmojiLbl = document.getElementById('lbl-cm-emoji');
+  if (cmEmojiLbl) cmEmojiLbl.textContent = lang==='en'?'Emoji':lang==='ru'?'Эмодзи':'Емодзі';
+  txt('cm-save-btn','cat-add-btn');
+  // Schedule modal
+  txt('lbl-sm-time','field-time'); txt('lbl-sm-task','field-task'); txt('sm-save-btn','save');
+  // Placeholders
+  const ph = (id, key) => { const el=document.getElementById(id); if(el) el.placeholder=L(key); };
+  ph('hm-name','hab-name-ph'); ph('gm-name','goal-name-ph');
+  ph('gm-desc','goal-desc-ph'); ph('sm-name','sched-task-ph');
+  ph('cat-name-inp','cat-name-ph');
+  // Dragon & Goals screen placeholders + badges
+  ph('h5','h5-ph'); ph('h3','h3-ph'); ph('brain-dump','brain-ph');
+  txt('ai-badge-dragon','ai-badge-dragon');
+  txt('ai-badge-goals','ai-badge-goals');
+  txt('ai-badge-sched','ai-badge-sched');
+  // Also update all elements with data-ph-key attribute
+  document.querySelectorAll('[data-ph-key]').forEach(el => {
+    const k = el.dataset.phKey; if(k) el.placeholder = L(k);
+  });
+  // Re-render progress if visible
+  if (document.getElementById('s-progress')?.classList.contains('on')) renderProgress();
+  // Re-render schedule nav if visible
+  if (document.getElementById('s-schedule')?.classList.contains('on')) renderSchedNav();
+  // Re-render how modal if open
+  if (document.getElementById('how-modal')?.classList.contains('on')) renderHowModal();
   tg?.HapticFeedback?.selectionChanged();
 }
  
@@ -839,7 +983,7 @@ function renderHabits() {
       <div class="habit-check" style="${h.done?'':'border-color:'+h.color}">${h.done?'✓':''}</div>
       <div class="habit-info">
         <div class="habit-name">${h.emoji||''} ${esc(h.name)}</div>
-        <div class="habit-streak">${h.streak>0?L('streak')+' '+h.streak+' дн.':h.freq==='weekdays'?'Будні':h.freq==='weekends'?'Вихідні':'Щодня'}</div>
+        <div class="habit-streak">${h.streak>0?L('streak')+' '+h.streak+' '+L('days-short'):h.freq==='weekdays'?L('freq-weekdays'):h.freq==='weekends'?L('freq-weekends'):L('freq-daily')}</div>
       </div>
       <button class="habit-del" onclick="openHabModal('${h.id}');event.stopPropagation()">✏️</button>
       <button class="habit-del" onclick="delHabit(event,'${h.id}')">✕</button>
@@ -988,7 +1132,7 @@ function goalItemHtml(g) {
         ${cat?`<div class="cat-badge">${cat.icon} ${cat.label[lang]||cat.label.uk}</div>`:''}
       </div>
       <div class="goal-acts">
-        <button title="Важлива" onclick="toggleImportant('${g.id}')" style="color:${g.important?'var(--yellow)':'var(--tx3)'}">${g.important?'⭐':'☆'}</button>
+        <button title="${L('important-lbl')}" onclick="toggleImportant('${g.id}')" style="color:${g.important?'var(--yellow)':'var(--tx3)'}">${g.important?'⭐':'☆'}</button>
         <button onclick="openGoalModal('${g.id}')">✏️</button>
         <button onclick="delGoal('${g.id}')">🗑️</button>
       </div>
@@ -1033,7 +1177,7 @@ function renderGoals() {
     html += catGoals.map(g => goalItemHtml(g)).join('');
   });
   if (noCat.length) {
-    if (html) html += `<div class="cat-heading">✦ Інше</div>`;
+    if (html) html += `<div class="cat-heading">${L('other-cat')}</div>`;
     html += noCat.map(g => goalItemHtml(g)).join('');
   }
   el.innerHTML = html;
@@ -1120,7 +1264,7 @@ async function parseBrainDump() {
  
   const btn = document.getElementById('brain-btn');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span> Аналізую...';
+  btn.innerHTML = `<span class="spin"></span> ${L('parsing')}`;
  
   try {
     const r = await fetch(PARSE_URL, {
@@ -1152,18 +1296,13 @@ async function parseBrainDump() {
     ta.value = '';
     tg?.HapticFeedback?.notificationOccurred('success');
  
-    const msg = lang==='en'
-      ? `✦ Added ${added} goals`
-      : lang==='ru'
-      ? `✦ Додано ${added} целей`
-      : `✦ Додано ${added} цілей`;
-    btn.innerHTML = msg;
-    setTimeout(() => { btn.disabled = false; btn.innerHTML = '✦ Розібрати в цілі'; }, 2000);
+    btn.innerHTML = L('goals-added')(added);
+    setTimeout(() => { btn.disabled = false; btn.innerHTML = L('brain-btn'); }, 2000);
   } catch(e) {
     console.error('Brain dump error:', e);
     btn.disabled = false;
-    btn.innerHTML = '✦ Розібрати в цілі';
-    alert(lang==='en'?'AI error, try again.':lang==='ru'?'Ошибка AI, попробуй ещё.':'Помилка AI, спробуй ще раз.');
+    btn.innerHTML = L('brain-btn');
+    alert(L('brain-err'));
   }
 }
  
@@ -1203,11 +1342,11 @@ function renderProgress() {
       </div>
       <div style="text-align:center;font-size:13px;color:var(--tx3);margin-top:4px">${L('habits-today-lbl')}</div>
     </div>
-    <div class="sec-lbl">${lang==='en'?'Habits today':lang==='ru'?'Привычки сегодня':'Звички сьогодні'}</div>
+    <div class="sec-lbl">${L('habits-today-lbl')}</div>
     ${habits.length ? habits.map(h=>`
       <div class="prog-hab ${h.done?'done':''}" onclick="toggleHabit('${h.id}');renderProgress()">
         <div class="ph-check">${h.done?'✓':''}</div>
-        <div style="flex:1"><div style="font-weight:500">${h.emoji||''} ${esc(h.name)}</div><div style="font-size:12px;color:var(--tx3)">🔥 ${h.streak||0} ${lang==='en'?'d.':lang==='ru'?'дн.':'дн.'}</div></div>
+        <div style="flex:1"><div style="font-weight:500">${h.emoji||''} ${esc(h.name)}</div><div style="font-size:12px;color:var(--tx3)">🔥 ${h.streak||0} ${L('days-short')}</div></div>
       </div>
     `).join('') : `<div class="empty"><span class="ei">📊</span><p>${L('no-habits')}</p></div>`}
     <div style="height:8px"></div>
@@ -1238,8 +1377,8 @@ function makeAvatarHTML(userId, size=58) {
  
 // ── Profile ───────────────────────────────────────────────────────────────
 function renderProfile() {
-  const tryRender = (u) => {
-    if (!u) return;
+  function applyUser(u) {
+    if (!u) return false;
     const full = [u.first_name, u.last_name].filter(Boolean).join(' ');
     const nameEl = document.getElementById('u-name');
     const subEl  = document.getElementById('u-sub');
@@ -1249,18 +1388,22 @@ function renderProfile() {
     if (subEl)  subEl.textContent  = u.username ? '@' + u.username : 'Aura';
     if (av)     av.innerHTML       = makeAvatarHTML(u.id, 58);
     if (dvAv)   dvAv.innerHTML     = makeAvatarHTML(u.id, 32);
-  };
- 
-  const u = tg?.initDataUnsafe?.user;
-  if (u) { tryRender(u); }
-  else { setTimeout(() => tryRender(tg?.initDataUnsafe?.user), 500); }
+    return true;
+  }
+  // Try immediately, then retry with increasing delays
+  // Telegram SDK may populate initDataUnsafe slightly after script execution
+  if (!applyUser(tg?.initDataUnsafe?.user)) {
+    [300, 700, 1500, 3000].forEach(ms =>
+      setTimeout(() => applyUser(tg?.initDataUnsafe?.user), ms)
+    );
+  }
 }
  
 // ── Schedule ──────────────────────────────────────────────────────────────
 function renderSchedule() {
   const el = document.getElementById('sched-list');
   if (!scheduleItems.length) {
-    el.innerHTML = `<div class="empty"><span class="ei">📅</span><p>Натисни «Згенерувати» або додай вручну</p></div>`;
+    el.innerHTML = `<div class="empty"><span class="ei">📅</span><p>${L('sched-empty')}</p></div>`;
     return;
   }
   const sorted = [...scheduleItems].sort((a,b)=>a.time.localeCompare(b.time));
@@ -1283,7 +1426,7 @@ function renderSchedule() {
 function openSchedModal(id) {
   editSchedId = id || null;
   const item = id ? scheduleItems.find(x=>x.id===id) : null;
-  document.getElementById('sm-title-h').textContent = id ? 'Редагувати' : 'Новий запис';
+  document.getElementById('sm-title-h').textContent = id ? L('sched-edit') : L('sched-new');
   document.getElementById('sm-time').value = item?.time || '';
   document.getElementById('sm-name').value = item?.title || '';
   openM('sched-modal');
@@ -1338,7 +1481,7 @@ const PARSE_URL  = API_BASE + '/parse-goals';
 async function loadScheduleAI() {
   const btn = document.getElementById('sched-ai-btn');
   if (!goals.length) {
-    alert(lang==='en'?'Add at least one goal first.':lang==='ru'?'Сначала добавь хотя бы одну цель.':'Спочатку додай хоча б одну ціль.');
+    alert(L('sched-no-goals'));
     return;
   }
   btn.disabled = true;
@@ -1372,11 +1515,10 @@ async function loadScheduleAI() {
     renderSchedule();
     tg?.HapticFeedback?.notificationOccurred('success');
   } catch(e) {
-    const msg = lang==='en'?'Error generating schedule. Try again.':lang==='ru'?'Ошибка. Попробуй ещё раз.':'Помилка. Спробуй ще раз.';
-    alert(msg);
+    alert(L('sched-err'));
   }
   btn.disabled = false;
-  btn.textContent = lang==='en'?'Regenerate':lang==='ru'?'Обновить':'Оновити';
+  btn.textContent = L('regenerate');
 }
  
 function getHabitAlert() {
@@ -1389,12 +1531,12 @@ function getHabitAlert() {
   const atRisk = habits.filter(h => (h.streak||0) >= 3 && !h.done);
   if (atRisk.length) {
     const names = atRisk.map(h => `"${h.name}"`).join(', ');
-    return `🔥 Серія під загрозою! ${names} — відміть сьогодні, щоб не втратити прогрес.`;
+    return L('at-risk')(names);
   }
  
-  // Вечір, і нічого не зроблено
+  // Evening and nothing done yet
   if (doneToday === 0 && hour >= 19) {
-    return `⚠️ Сьогодні жоден запис ще не відмічено. Ще є час!`;
+    return L('none-done');
   }
  
   return null;
@@ -1434,6 +1576,7 @@ async function loadAI() {
     if (!r.ok) throw 0;
     const d = await r.json();
     textEl.textContent = d.advice;
+    textEl.removeAttribute('data-hint');
     showAlert(d.alert || null);
     tg?.HapticFeedback?.notificationOccurred('success');
   } catch(_) {
@@ -1441,12 +1584,12 @@ async function loadAI() {
     showAlert(null);
   }
   btn.disabled = false;
-  btn.textContent = 'Оновити';
+  btn.textContent = L('refresh');
 }
  
 // ── Stars ─────────────────────────────────────────────────────────────────
 function doStars() {
-  if (!tg) { alert('Підтримка зірками доступна лише в Telegram'); return; }
+  if (!tg) { alert(L('stars-tg-only')); return; }
   tg?.HapticFeedback?.impactOccurred('medium');
   selStarsAmt = 25;
   document.getElementById('stars-range').value = 25;
@@ -1502,7 +1645,64 @@ function highlightColor(containerId, color) {
   });
 }
  
+function renderHowModal() {
+  const body = document.getElementById('how-modal-body');
+  if (!body) return;
+  const sections = {
+    uk: [
+      { icon: '🐉', title: 'Дракон',
+        text: 'Головний екран — твій особистий дракон. Він росте разом з тобою: щоразу як ти відмічаєш звичку виконаною, дракон отримує XP та розвивається. Всього є 15 форм — від крихітного зародка до могутнього дракона. Крім цього, тут є «Горизонт 5 років» і «Горизонт 3 роки» — місце, де ти можеш записати, ким хочеш стати. AI-порада щодня генерує нову рекомендацію на основі твоїх цілей та звичок.' },
+      { icon: '✅', title: 'Трекер',
+        text: 'Тут живуть твої звички — щоденні дії, які ведуть тебе до цілей. Додавай ритуали: ранкова зарядка, медитація, читання, вода. Відмічай виконані одним натисканням — і стежи за серіями. Пропуск серії — дракон слабшає. Кнопка «Оновити» просить AI запропонувати нові звички, виходячи з твоїх поточних цілей.' },
+      { icon: '🎯', title: 'Цілі',
+        text: 'Запиши, чого хочеш досягти. Є два способи: додати ціль вручну або скористатись AI-аналізом — просто напиши вільним текстом все, що зараз хвилює, і AI сам розбере це в конкретні цілі та позначить найважливіші зіркою ⭐. Цілі можна групувати по категоріях та позначати як важливі.' },
+      { icon: '📊', title: 'Прогрес',
+        text: 'Повна статистика твоєї роботи: поточна серія і особистий рекорд, кількість виконаних звичок, загальний XP. Тут ти бачиш реальну картину — де є прогрес, а де є місце для росту.' },
+      { icon: '📅', title: 'Розклад',
+        text: 'AI складає розклад дня спеціально під твої цілі та звички — просто натисни «Згенерувати». Можна переглядати по днях, тижнях і місяцях. Кожен запис можна редагувати або додавати вручну — гнучкість повна.' },
+      { icon: '⚙️', title: 'Налаштування',
+        text: 'Вибери мову (українська, російська, англійська), перемкни тему (темна/світла/авто) та підтримай проєкт зірками Telegram — ваша підтримка дуже важлива для нас. Дякуємо, що з нами! 💜' },
+    ],
+    ru: [
+      { icon: '🐉', title: 'Дракон',
+        text: 'Главный экран — твой личный дракон. Он растёт вместе с тобой: каждый раз, когда ты отмечаешь привычку выполненной, дракон получает XP и развивается. Всего 15 форм — от крошечного зародыша до мощного дракона. Здесь же есть «Горизонт 5 лет» и «Горизонт 3 года» — место, где ты записываешь, кем хочешь стать. AI-совет каждый день генерирует новую рекомендацию на основе твоих целей и привычек.' },
+      { icon: '✅', title: 'Трекер',
+        text: 'Здесь живут твои привычки — ежедневные действия, которые ведут тебя к целям. Добавляй ритуалы: утренняя зарядка, медитация, чтение, вода. Отмечай выполненные одним нажатием и следи за сериями. Пропуск серии — дракон слабеет. Кнопка «Обновить» просит AI предложить новые привычки, исходя из твоих текущих целей.' },
+      { icon: '🎯', title: 'Цели',
+        text: 'Запиши, чего хочешь достичь. Есть два способа: добавить цель вручную или воспользоваться AI-анализом — просто напиши свободным текстом всё, что сейчас волнует, и AI сам разберёт это в конкретные цели и отметит самые важные звёздочкой ⭐. Цели можно группировать по категориям и помечать как важные.' },
+      { icon: '📊', title: 'Прогресс',
+        text: 'Полная статистика твоей работы: текущая серия и личный рекорд, количество выполненных привычек, общий XP. Здесь ты видишь реальную картину — где есть прогресс, а где есть место для роста.' },
+      { icon: '📅', title: 'Расписание',
+        text: 'AI составляет расписание дня специально под твои цели и привычки — просто нажми «Сгенерировать». Можно просматривать по дням, неделям и месяцам. Каждую запись можно редактировать или добавлять вручную — полная гибкость.' },
+      { icon: '⚙️', title: 'Настройки',
+        text: 'Выбери язык (украинский, русский, английский), переключи тему (тёмная/светлая/авто) и поддержи проект звёздами Telegram — ваша поддержка очень важна для нас. Спасибо, что с нами! 💜' },
+    ],
+    en: [
+      { icon: '🐉', title: 'Dragon',
+        text: 'The main screen — your personal dragon. It grows with you: every time you mark a habit as done, your dragon earns XP and evolves. There are 15 forms in total — from a tiny egg to a mighty dragon. You also have a "5-year horizon" and "3-year horizon" — a place to write who you want to become. The AI tip generates a fresh recommendation every day based on your goals and habits.' },
+      { icon: '✅', title: 'Tracker',
+        text: 'This is where your habits live — daily actions that lead you toward your goals. Add rituals: morning workout, meditation, reading, hydration. Mark them done with one tap and watch your streaks grow. Break a streak — your dragon weakens. The Refresh button asks AI to suggest new habits based on your current goals.' },
+      { icon: '🎯', title: 'Goals',
+        text: 'Write down what you want to achieve. Two ways: add a goal manually, or use AI analysis — just write freely about what is on your mind and AI will extract specific goals and mark the most important ones with a star ⭐. Goals can be grouped into categories and flagged as important.' },
+      { icon: '📊', title: 'Progress',
+        text: 'Full statistics on your work: current streak and personal record, number of habits completed, total XP. Here you see the real picture — where you are growing and where there is room to improve.' },
+      { icon: '📅', title: 'Schedule',
+        text: 'AI builds a daily schedule tailored to your goals and habits — just tap Generate. Browse by day, week or month. Every entry can be edited or added manually — full flexibility.' },
+      { icon: '⚙️', title: 'Settings',
+        text: 'Choose your language (Ukrainian, Russian, English), switch the theme (dark / light / auto) and support the project with Telegram Stars — your support means a lot to us. Thank you for being here! 💜' },
+    ],
+  };
+  const cards = (sections[lang] || sections.uk).map(s =>
+    `<div class="card" style="padding:14px 16px">
+      <div style="font-size:16px;font-weight:700;margin-bottom:6px">${s.icon} ${s.title}</div>
+      <div style="font-size:13px;color:var(--tx2);line-height:1.7">${s.text}</div>
+    </div>`
+  ).join('');
+  body.innerHTML = cards;
+}
+ 
 function openM(id) {
+  if (id === 'how-modal') renderHowModal();
   document.getElementById(id).classList.add('on');
 }
 function closeM(e, id) {
@@ -1526,7 +1726,7 @@ function renderSchedNav() {
   const d = new Date(schedCurDate+'T00:00:00');
   const isToday = schedCurDate === todayKey();
   const label = isToday
-    ? (lang==='en'?'Today':lang==='ru'?'Сегодня':'Сьогодні')
+    ? L('today-hab')
     : d.toLocaleDateString(lang==='en'?'en-US':lang==='ru'?'ru-RU':'uk-UA',{weekday:'short',day:'numeric',month:'short'});
   document.getElementById('sched-nav-date').textContent = label;
 }
@@ -1688,4 +1888,3 @@ init();
 </script>
 </body>
 </html>
- 
