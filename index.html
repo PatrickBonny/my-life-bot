@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -443,7 +442,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--tx);font-si
   </div>
   <div class="ni" id="ni-schedule" onclick="go('schedule')">
     <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/></svg>
-    <span>Розклад</span>
+    <span id="nl-schedule">Розклад</span>
   </div>
   <div class="ni" id="ni-settings" onclick="go('settings')">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -639,11 +638,33 @@ async function init() {
   document.getElementById('h5').addEventListener('blur', e => csSet('h5', e.target.value));
   document.getElementById('h3').addEventListener('blur', e => csSet('h3', e.target.value));
  
-  // Reset habits daily
-  const today = new Date().toDateString();
-  habits.forEach(h => { if (h.lastReset !== today) { h.done = false; h.lastReset = today; } });
-  csSet('habits', JSON.stringify(habits));
+  checkDailyReset();
 }
+ 
+// ── Daily reset ───────────────────────────────────────────────────────────
+function checkDailyReset() {
+  const today = new Date().toDateString();
+  let changed = false;
+  habits.forEach(h => {
+    if (h.lastReset !== today) {
+      // Якщо звичку не виконали вчора — обнуляємо серію
+      if (!h.done && (h.streak||0) > 0 && h.lastReset) h.streak = 0;
+      h.done = false;
+      h.lastReset = today;
+      changed = true;
+    }
+  });
+  if (changed) csSet('habits', JSON.stringify(habits));
+}
+ 
+// Перевіряємо скидання при поверненні у вкладку / розблокуванні телефону
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    checkDailyReset();
+    renderHabits();
+    updateHome();
+  }
+});
  
 // ── Theme ─────────────────────────────────────────────────────────────────
 function applyTheme(t, save=true) {
@@ -836,8 +857,8 @@ function setLang(l) {
   ['uk','ru','en'].forEach(x => document.getElementById('lg-'+x)?.classList.toggle('on', x===l));
   updateHome(); renderHabits(); renderGoals(); renderDragon();
   // Nav labels
-  ['nl-dragon','nl-habits','nl-goals','nl-progress','nl-settings'].forEach((id,i) => {
-    const keys = ['dragon','habits','goals','progress','settings'];
+  ['nl-dragon','nl-habits','nl-goals','nl-progress','nl-schedule','nl-settings'].forEach((id,i) => {
+    const keys = ['dragon','habits','goals','progress','sched-title','settings'];
     const el = document.getElementById(id); if(el) el.textContent = L(keys[i]);
   });
   // Screen titles & labels
@@ -850,6 +871,7 @@ function setLang(l) {
   txt('txt-today-hab','today-hab');
   txt('txt-how-btn','how-btn'); txt('txt-how-title','how-title');
   txt('txt-how-sub','how-sub'); txt('txt-sched-title','sched-title');
+  txt('brain-btn','brain-btn');
   txt('txt-add-manual','add-manual');
   // Schedule tabs
   txt('stab-day','tab-day'); txt('stab-week','tab-week'); txt('stab-month','tab-month');
@@ -973,6 +995,7 @@ function previewDragon(i) {
  
 // ── Habits ────────────────────────────────────────────────────────────────
 function renderHabits() {
+  checkDailyReset();
   const today = new Date().toDateString();
   const done = habits.filter(h => h.done && h.lastReset===today).length;
   document.getElementById('hab-sub').textContent = `${done} / ${habits.length} ${L('today-hab').toLowerCase()}`;
